@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>IM-platform</artifactId>
+    <artifactId>Login-Register</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>IM-platform</name>
     <description>IM-platform</description>

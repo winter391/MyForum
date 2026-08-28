@@ -24,4 +24,20 @@ public class ResultUtil
     {
         return new Result<T>(ResultCode.SUCCESS.getCode(),ResultCode.SUCCESS.getMsg(),null);
     }
+
+    public static <T> Result<T> error()
+    {
+        return new Result<T>(ResultCode.ERROR.getCode(),ResultCode.ERROR.getMsg(),null);
+    }
+
+    public static <T> Result<T> error(String msg)
+    {
+        return new Result<T>(ResultCode.ERROR.getCode(),msg,null);
+    }
+
+
+    public static <T> Result<T> sync_error()
+    {
+        return new Result<T>(ResultCode.SYNC_ERROR.getCode(),ResultCode.SYNC_ERROR.getMsg(),null);
+    }
 }

@@ -8,9 +8,11 @@ public enum ResultCode
 {
     FAILED(10000,"操作失败"),
 
-    SUCCESS(10001,"操作成功");
+    SUCCESS(10001,"操作成功"),
 
+    ERROR(500,"服务器错误"),
 
+    SYNC_ERROR(10010,"json格式错误");
 
 
 

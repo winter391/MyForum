@@ -1,0 +1,30 @@
+
+server:
+  port: 8080
+
+
+Jwt:
+  accessTokenSecret: 密钥
+  refreshTokenSecret: 密钥
+  accessTokenExpireTime: 1800
+  refreshTokenExpireTime: 10080
+
+
+
+spring:
+  application:
+    name: IM-platform
+
+  datasource:
+    url: jdbc:mysql://你的ip/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: 用户名
+    password: 密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+
