@@ -26,3 +26,15 @@ create table user_subscriber
 
     constraint subscriber_foreign_key  foreign key (subscriber_id) references user(id) on update cascade on delete  cascade
 ) engine=InnoDB charset = utf8mb4 comment '这张表记录了关注关系，即一个人关注另一个人的关系'
+
+
+
+create table private_message
+(
+    id bigint primary key,
+    sender_id bigint comment '发送者id',
+    receiver_id bigint comment '接收者id',
+    message varchar(255) comment '消息本体，如果是文件那么存储的就是url',
+    type tinyint comment '文件类型，0：文字，1：文件',
+    chat_id int comment '会话内id，标识这是两个人之间发的第几条消息'
+)engine = InnoDB charset  = utf8mb4 comment '这张表存储了私聊消息'

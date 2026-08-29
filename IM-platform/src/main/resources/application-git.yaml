@@ -1,0 +1,40 @@
+Spring:
+  application:
+    name: IM-platform
+
+
+
+  data:
+    redis:
+      host: id地址
+      port: 端口
+      password: 密码
+
+      lettuce:
+        pool:
+          max-active: 30
+          max-idle: 20
+          min-idle: 10
+          max-wait: 3000
+
+      Code:
+        lock: "lock"
+        expireTime: 60
+        waitingTime: 30
+        onlineUserTerminal: "onlineUserTerminal"
+
+
+
+
+
+
+  rabbitmq:
+    host: 192.168.32.131
+    port: 5672
+    username: winter
+    password: "aB991974!"
+    virtual-host: /MyForum
+
+    publisher-confirm-type: correlated
+
+    publisher-returns: true;
