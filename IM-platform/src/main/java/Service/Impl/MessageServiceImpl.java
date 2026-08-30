@@ -1,6 +1,7 @@
 package Service.Impl;
 
 
+import Code.RabbitMqCode;
 import Code.RedisCode;
 import DLL.SendMessage;
 import DTO.SendStringPrivateMessageDto;
@@ -96,7 +97,7 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
                 result_serverIds.add((Integer)id);
             }
         }
-        sendMessage.SendMessage(result_serverIds,dto.getMessage(),0);
+        sendMessage.SendMessage(result_serverIds,message, RabbitMqCode.PRIVATE_MESSAGE);
     }
 
     private boolean isSubcribeEachOther(Long id_first,Long id_second)

@@ -16,7 +16,8 @@ public class PrivateMessage implements Message
 
     
     private String message;
-    
+
+    //发送问消息类型，0：文字，1：文件
     private Short type;
     
     private Integer chatId;

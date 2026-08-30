@@ -17,11 +17,11 @@ public class SendMessageImpl implements SendMessage
 
 
     @Override
-    public void SendMessage(List<Integer> serverId,String message,Integer messageType)
+    public <T>void SendMessage(List<Integer> serverId, T message,String messageType)
     {
         if(message==null||serverId.isEmpty()) return;
         for(Integer id:serverId) {
-            rabbitTemplate.convertAndSend(RabbitMqCode.MAIN_EXCHANGER, RabbitMqCode.joinRoutingKey(id,messageType.toString()));
+            rabbitTemplate.convertAndSend(RabbitMqCode.MAIN_EXCHANGER, RabbitMqCode.joinRoutingKey(id,messageType));
         }
     }
 }

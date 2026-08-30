@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface SendMessage
 {
-    public void SendMessage(List<Integer> serverId, String message, Integer messageType);
+    public <T>void SendMessage(List<Integer> serverId, T message, String messageType);
 }

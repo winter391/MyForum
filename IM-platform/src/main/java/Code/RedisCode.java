@@ -19,28 +19,28 @@ public class RedisCode
     //这里key是较小id:较大id作为会话id
     public static String CHAT_KEY_TO_CHAT_ID;
 
-    @Value("${Spring.data.redis.Code.lock}")
+    @Value("${spring.data.redis.code.lock}")
     public void setLOCK(String LOCK) {
         RedisCode.LOCK = LOCK;
     }
 
-    @Value("${Spring.data.redis.Code.chatKey_to_chatId}")
+    @Value("${spring.data.redis.code.chat-key_to-chat-id}")
     public void setChatKeyToChatId(String chatKeyToChatId) {
         CHAT_KEY_TO_CHAT_ID = chatKeyToChatId;
     }
 
 
-    @Value("${Spring.data.redis.Code.expireTime}")
+    @Value("${spring.data.redis.code.expire-time}")
     public static void setExpireTime(Integer expireTime) {
         EXPIRE_TIME = expireTime;
     }
 
-    @Value("${Spring.data.redis.Code.waitingTime}")
+    @Value("${spring.data.redis.code.waiting-time}")
     public static void setWaitingTime(Integer waitingTime) {
         WATTING_TIME = waitingTime;
     }
 
-    @Value("${Spring.data.redis.Code.onlineUserTerminal}")
+    @Value("${spring.data.redis.code.online-user-terminal-key}")
     public void setOnlineUserIdWithTerminalToServerId(String onlineUserIdWithTerminalToServerId) {
         ONLINE_USER_ID_WITH_TERMINAL_TO_SERVER_ID = onlineUserIdWithTerminalToServerId;
     }

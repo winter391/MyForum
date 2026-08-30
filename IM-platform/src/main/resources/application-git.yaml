@@ -1,14 +1,39 @@
-Spring:
+spring:
   application:
     name: IM-platform
 
+  datasource:
+    url: jdbc:mysql://你的IP地址:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: 你的用户名
+    password: "你的密码"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
 
+  rabbitmq:
+    host: 你的IP地址
+    port: 5672
+    username: 你的用户名
+    password: "你的密码"
+    virtual-host: /MyForum
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    code:
+      main-exchanger: main
+      server-id: "serverId:"
+      message-type: "messageType:"
+      private-message: "privateMessage"
+      system-message: "systemMessage"
 
   data:
     redis:
-      host: id地址
-      port: 端口
-      password: 密码
+      host: 你的IP地址
+      port: 6379
+      password: "你的密码"
 
       lettuce:
         pool:
@@ -17,24 +42,9 @@ Spring:
           min-idle: 10
           max-wait: 3000
 
-      Code:
+      code:
         lock: "lock"
-        expireTime: 60
-        waitingTime: 30
-        onlineUserTerminal: "onlineUserTerminal"
-
-
-
-
-
-
-  rabbitmq:
-    host: 192.168.32.131
-    port: 5672
-    username: winter
-    password: "aB991974!"
-    virtual-host: /MyForum
-
-    publisher-confirm-type: correlated
-
-    publisher-returns: true;
+        chat-key_to-chat-id: "chatKey:ChatId"
+        expire-time: 60
+        waiting-time: 30
+        online-user-terminal-key: "onlineUserTerminal"
