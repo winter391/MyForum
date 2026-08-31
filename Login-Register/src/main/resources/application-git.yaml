@@ -1,11 +1,10 @@
-
 server:
-  port: 8080
+  port: 8081
 
 
 Jwt:
-  accessTokenSecret: 密钥
-  refreshTokenSecret: 密钥
+  accessTokenSecret: "yourAccessTokenSecret"
+  refreshTokenSecret: "yourRefreshTokenSecret"
   accessTokenExpireTime: 1800
   refreshTokenExpireTime: 10080
 
@@ -16,9 +15,9 @@ spring:
     name: IM-platform
 
   datasource:
-    url: jdbc:mysql://你的ip/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: 用户名
-    password: 密码
+    url: jdbc:mysql://192.168.32.131:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: yourUsername
+    password: "yourPassword"
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -26,5 +25,3 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       connection-timeout: 30000
-
-

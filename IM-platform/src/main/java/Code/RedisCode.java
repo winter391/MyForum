@@ -9,7 +9,7 @@ public class RedisCode
 {
     public static Integer EXPIRE_TIME;
 
-    public static Integer WATTING_TIME;
+    public static Integer WAITING_TIME;
 
     public static String LOCK;
 
@@ -31,13 +31,13 @@ public class RedisCode
 
 
     @Value("${spring.data.redis.code.expire-time}")
-    public static void setExpireTime(Integer expireTime) {
+    public void setExpireTime(Integer expireTime) {
         EXPIRE_TIME = expireTime;
     }
 
     @Value("${spring.data.redis.code.waiting-time}")
-    public static void setWaitingTime(Integer waitingTime) {
-        WATTING_TIME = waitingTime;
+    public void setWaitingTime(Integer waitingTime) {
+        WAITING_TIME = waitingTime;
     }
 
     @Value("${spring.data.redis.code.online-user-terminal-key}")

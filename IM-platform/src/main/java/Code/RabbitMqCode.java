@@ -48,7 +48,7 @@ public class RabbitMqCode
 
     public static String joinRoutingKey(Integer serverId,String messageType)
     {
-        return String.join(".",SERVER_ID+":"+serverId.toString(),MESSAGE_TYPE+":"+messageType);
+        return String.join(".",SERVER_ID+serverId.toString(),MESSAGE_TYPE+messageType);
     }
 
 }

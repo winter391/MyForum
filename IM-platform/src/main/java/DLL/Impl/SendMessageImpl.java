@@ -2,6 +2,7 @@ package DLL.Impl;
 
 import Code.RabbitMqCode;
 import DLL.SendMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@Slf4j
 public class SendMessageImpl implements SendMessage
 {
 
@@ -21,7 +23,8 @@ public class SendMessageImpl implements SendMessage
     {
         if(message==null||serverId.isEmpty()) return;
         for(Integer id:serverId) {
-            rabbitTemplate.convertAndSend(RabbitMqCode.MAIN_EXCHANGER, RabbitMqCode.joinRoutingKey(id,messageType));
+            log.debug("RoutingKey为：{}",RabbitMqCode.joinRoutingKey(id,messageType));
+            rabbitTemplate.convertAndSend(RabbitMqCode.MAIN_EXCHANGER, RabbitMqCode.joinRoutingKey(id,messageType),message);
         }
     }
 }

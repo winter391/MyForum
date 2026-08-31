@@ -54,8 +54,9 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
         RLock lock = redissonClient.getLock(String.join(":",RedisCode.LOCK,dto.getSenderId().toString(),dto.getReceiverId().toString()));
         String chatKey = String.join(":",Long.valueOf(min(dto.getReceiverId(),dto.getSenderId())).toString(),Long.valueOf(max(dto.getReceiverId(),dto.getSenderId())).toString());
         Long chatId = -1L;
+        boolean sign = false;
         try {
-            boolean isLock = lock.tryLock(RedisCode.WATTING_TIME, TimeUnit.SECONDS);
+            boolean isLock = lock.tryLock(RedisCode.WAITING_TIME, TimeUnit.SECONDS);
             if (!isLock) {
                 throw new GlobalException("服务超时");
             }
@@ -70,13 +71,14 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
                 chatId = maxId + 1;
                 redisTemplate.opsForValue().set(String.join(":", RedisCode.CHAT_KEY_TO_CHAT_ID, chatKey), maxId + 1);
             }
+            sign = true;
         }
         catch (InterruptedException e)
         {
             throw new GlobalException("服务超时");
         }
         finally {
-            lock.unlock();
+            if(sign)lock.unlock();
         }
         PrivateMessage message = CopyProperties.copyProperties(dto, PrivateMessage.class);
         message.setType((short)0);
@@ -102,8 +104,8 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
 
     private boolean isSubcribeEachOther(Long id_first,Long id_second)
     {
-        Long first = userMapper.getSubscriberId(id_first);
-        Long second = userMapper.getSubscriberId(id_second);
+        Long first = userMapper.getSubscriberId(id_first,id_second);
+        Long second = userMapper.getSubscriberId(id_second,id_first);
 
         if(first==null||second==null) return false;
         else return true;

@@ -3,9 +3,9 @@ spring:
     name: IM-platform
 
   datasource:
-    url: jdbc:mysql://你的IP地址:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: 你的用户名
-    password: "你的密码"
+    url: jdbc:mysql://yourIP:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: yourUsername
+    password: "yourPassword"
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -14,12 +14,13 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
 
+
   rabbitmq:
-    host: 你的IP地址
+    host: yourIP
     port: 5672
-    username: 你的用户名
-    password: "你的密码"
-    virtual-host: /MyForum
+    username: yourUsername
+    password: "yourPassword"
+    virtual-host: MyForum
     publisher-confirm-type: correlated
     publisher-returns: true
     code:
@@ -29,11 +30,12 @@ spring:
       private-message: "privateMessage"
       system-message: "systemMessage"
 
+
   data:
     redis:
-      host: 你的IP地址
+      host: yourIP
       port: 6379
-      password: "你的密码"
+      password: "yourPassword"
 
       lettuce:
         pool:
@@ -48,3 +50,7 @@ spring:
         expire-time: 60
         waiting-time: 30
         online-user-terminal-key: "onlineUserTerminal"
+
+logging:
+  level:
+    root: info
