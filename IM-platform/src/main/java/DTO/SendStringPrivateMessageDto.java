@@ -15,7 +15,6 @@ public class SendStringPrivateMessageDto
     private Long receiverId;
 
 
-    private List<Integer> terminals;
 
 
     private String message;

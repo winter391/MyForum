@@ -1,0 +1,5 @@
+Jwt:
+  accessTokenSecret: "yourAccessTokenSecret"
+  refreshTokenSecret: "yourRefreshTokenSecret"
+  accessTokenExpireTime: 1800
+  refreshTokenExpireTime: 10080

@@ -3,6 +3,7 @@ package Service.Impl;
 
 import Code.RabbitMqCode;
 import Code.RedisCode;
+import Code.TerminalCode;
 import DLL.SendMessage;
 import DTO.SendStringPrivateMessageDto;
 import Entity.PrivateMessage;
@@ -86,7 +87,7 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
         message.setChatKey(chatKey);
         save(message);
         List<String> terminal_redisKey = new ArrayList<>();
-        for(Integer terminal:dto.getTerminals())
+        for(Integer terminal: TerminalCode.getAllTerminal())
         {
             terminal_redisKey.add(String.join(":",RedisCode.ONLINE_USER_ID_WITH_TERMINAL_TO_SERVER_ID,dto.getReceiverId().toString(),terminal.toString()));
         }

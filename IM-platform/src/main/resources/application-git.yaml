@@ -2,6 +2,10 @@ spring:
   application:
     name: IM-platform
 
+  config:
+    import: classpath:application-common-git.yaml
+
+
   datasource:
     url: jdbc:mysql://yourIP:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: yourUsername
