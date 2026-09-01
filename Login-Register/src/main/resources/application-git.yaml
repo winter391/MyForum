@@ -1,28 +1,9 @@
 server:
   port: 8081
 
-
-
-
-
-
 spring:
   application:
     name: IM-platform
 
   config:
     import: classpath:application-common-git.yaml
-
-
-
-  datasource:
-    url: jdbc:mysql://192.168.32.131:3306/MyForum?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: yourUsername
-    password: "yourPassword"
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 20
-      minimum-idle: 10
-      idle-timeout: 600000
-      max-lifetime: 1800000
-      connection-timeout: 30000

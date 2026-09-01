@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("Mapper")
-@ComponentScan({"Code","Config","Controller","DLL","Dto","Entity","Service","Mapper","Exception","Interceptor","Util"})
+@ComponentScan({"Code", "Config","Controller","DLL","Dto","Entity","Service","Mapper","Exception","Interceptor","Util"})
 public class start
 {
     public static void main(String[] args) {

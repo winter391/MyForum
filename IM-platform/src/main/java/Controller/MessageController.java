@@ -22,4 +22,14 @@ public class MessageController
     {
         messageService.SendStringPrivateMessage(dto);
     }
+
+
+    @PostMapping("/Subscribe")
+    public void Subscribe(@RequestBody Long id)
+    {
+
+    }
+
+
+
 }

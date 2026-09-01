@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: IM-Server
+
+    config:
+      import: classpath:application-common-dev.yaml
+
+
+redis:
+  lock:
+    code:
+      lock-serverId: "LockServerId"
+  code:
+    serverId: "serverId"

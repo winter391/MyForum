@@ -7,10 +7,13 @@ import Code.TerminalCode;
 import DLL.SendMessage;
 import DTO.SendStringPrivateMessageDto;
 import Entity.PrivateMessage;
+import Entity.Subscribe;
+import Entity.User;
 import Mapper.PrivateMessageMapper;
 import Mapper.UserMapper;
+import Mapper.SubscribeMapper;
 import Util.CopyProperties;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import Util.GetUser;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -20,7 +23,6 @@ import org.springframework.stereotype.Service;
 import Exception.GlobalException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import Service.MessageService;
@@ -42,6 +44,9 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private SubscribeMapper subscribeMapper;
 
     @Override
     public void SendStringPrivateMessage(SendStringPrivateMessageDto dto)
@@ -110,5 +115,18 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
 
         if(first==null||second==null) return false;
         else return true;
+    }
+
+
+    @Override
+    public void Subscribe(Long id)
+    {
+        User user = GetUser.getUser();
+        Long target_id = subscribeMapper.getSubscribedId(user.getId(),id);
+        if(target_id!=null)
+        {
+            throw new GlobalException("已关注对方");
+        }
+        subscribeMapper.insert(new Subscribe(user.getId(),id));
     }
 }
