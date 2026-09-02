@@ -7,7 +7,6 @@ spring:
 
   rabbitmq:
     code:
-      main-exchanger: main
       server-id: "serverId:"
       message-type: "messageType:"
       private-message: "privateMessage"

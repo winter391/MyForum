@@ -2,13 +2,29 @@ spring:
   application:
     name: IM-Server
 
-    config:
-      import: classpath:application-common-dev.yaml
+
+  config:
+    import: classpath:application-common-git.yaml
+
+
+  rabbitmq:
+    code:
+      server-name: "server_"
+      private-message-queue-name: "privateMessage-server_"
+      system-message-queue-name: "systemMessage-server_"
+      private-message-routing-key: "*.messageType:privateMessage"
+      system-message-routing-key: "*.messageType:systemMessage"
+      main-exchanger-routing-key: "serverId:"
+
+
+
 
 
 redis:
   lock:
     code:
       lock-serverId: "LockServerId"
+      waiting-time: 30
+      expire-time: -1
   code:
     serverId: "serverId"

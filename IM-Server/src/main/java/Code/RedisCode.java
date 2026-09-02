@@ -1,7 +1,10 @@
 package Code;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class RedisCode
 {
     public static String SERVER_ID;

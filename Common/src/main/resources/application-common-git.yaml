@@ -25,6 +25,8 @@ spring:
     virtual-host: MyForum
     publisher-confirm-type: correlated
     publisher-returns: true
+    code:
+      main-exchanger: main
 
   data:
     redis:
