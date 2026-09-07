@@ -13,6 +13,8 @@ public class RedissonCode
 
     public static Integer EXPIRE_TIME;
 
+    public static String ONLINE_USER_ID_WITH_TERMINAL_TO_SERVER_ID_LOCK;
+
     @Value("${redis.lock.code.lock-serverId}")
     public void setLockServerId(String serverId) {
         LOCK_SERVER_ID = serverId;
@@ -26,5 +28,10 @@ public class RedissonCode
     @Value("${redis.lock.code.expire-time}")
     public void setExpireTime(Integer expireTime) {
         EXPIRE_TIME = expireTime;
+    }
+
+    @Value("${redis.lock.code.online-user-terminal-lock}")
+    public void setOnlineUserIdWithTerminalToServerIdLock(String onlineUserIdWithTerminalToServerIdLock) {
+        ONLINE_USER_ID_WITH_TERMINAL_TO_SERVER_ID_LOCK = onlineUserIdWithTerminalToServerIdLock;
     }
 }

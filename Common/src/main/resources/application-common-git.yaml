@@ -39,3 +39,5 @@ spring:
           max-idle: 20
           min-idle: 10
           max-wait: 3000
+    code:
+      online-user-terminal-key: "onlineUserTerminal"

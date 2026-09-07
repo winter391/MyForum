@@ -3,6 +3,7 @@ package Interceptor;
 
 import Code.JwtCode;
 import Entity.User;
+import Entity.UserSession;
 import Util.JwtUtil;
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,8 +24,8 @@ public class interceptor implements HandlerInterceptor
            throw new GlobalException("token失效");
        }
        String Jsonstr = JwtUtil.getInfo(token,JwtCode.accessTokenSecret);
-       User user = JSON.parseObject(Jsonstr,User.class);
-       request.setAttribute("user",user);
+       UserSession user = JSON.parseObject(Jsonstr,UserSession.class);
+       request.setAttribute("session",user);
        return true;
     }
 }

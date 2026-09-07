@@ -1,3 +1,7 @@
+
+server:
+  port: 8080
+
 spring:
   application:
     name: IM-platform
@@ -19,7 +23,6 @@ spring:
         chat-key_to-chat-id: "chatKey:ChatId"
         expire-time: 60
         waiting-time: 30
-        online-user-terminal-key: "onlineUserTerminal"
 
 logging:
   level:

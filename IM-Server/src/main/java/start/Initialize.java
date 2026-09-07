@@ -4,13 +4,20 @@ import Code.RabbitmqCode;
 import Code.RedisCode;
 import Code.RedissonCode;
 import Code.ServerId;
+import Listener.PrivateMessageListener;
+import Listener.SystemMessageListener;
+
+import Netty.NettyMain;
+import jakarta.annotation.PreDestroy;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -32,13 +39,41 @@ public class Initialize implements ApplicationRunner
     @Autowired
     private RabbitAdmin rabbitAdmin;
 
+    @Autowired
+    private PrivateMessageListener privateMessageListener;
+
+    @Autowired
+    private SystemMessageListener systemMessageListener;
+
+    @Autowired
+    private ConnectionFactory connectionFactory;
+
+
+    @Autowired
+    private NettyMain nettyMain;
+
+
     @Override
     public void run(ApplicationArguments args) throws Exception
     {
         serverIdIntialiaze();
         messageServerInitialize();
-
+        ListenerInitialize();
+        new Thread(nettyMain::run,"netty-ws-server").start();
     }
+
+
+    @PreDestroy
+    public void destroy()
+    {
+        rabbitAdmin.deleteQueue(RabbitmqCode.privateMessageQueueName+ServerId.id);
+        rabbitAdmin.deleteQueue(RabbitmqCode.systemMessageQueueName+ServerId.id);
+        rabbitAdmin.deleteExchange(RabbitmqCode.SERVER_NAME+ServerId.id);
+    }
+
+
+
+
     public void serverIdIntialiaze()
     {
         RLock lock = redissonClient.getLock(RedissonCode.LOCK_SERVER_ID);
@@ -76,4 +111,21 @@ public class Initialize implements ApplicationRunner
         rabbitAdmin.declareBinding(bindingSystemMessage);
         rabbitAdmin.declareBinding(bindingExchanger);
     }
+
+    public void ListenerInitialize()
+    {
+        SimpleMessageListenerContainer PMcontainer = new SimpleMessageListenerContainer();
+        PMcontainer.setQueueNames(RabbitmqCode.privateMessageQueueName+ServerId.id);
+        PMcontainer.setMessageListener(privateMessageListener);
+        PMcontainer.setConnectionFactory(connectionFactory);
+        PMcontainer.start();
+
+        SimpleMessageListenerContainer SMcontainer = new SimpleMessageListenerContainer();
+        SMcontainer.setQueueNames(RabbitmqCode.systemMessageQueueName+ServerId.id);
+        SMcontainer.setMessageListener(systemMessageListener);
+        SMcontainer.setConnectionFactory(connectionFactory);
+        SMcontainer.start();
+    }
+
+
 }

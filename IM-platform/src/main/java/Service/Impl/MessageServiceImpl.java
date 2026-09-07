@@ -9,6 +9,7 @@ import DTO.SendStringPrivateMessageDto;
 import Entity.PrivateMessage;
 import Entity.Subscribe;
 import Entity.User;
+import Entity.UserSession;
 import Mapper.PrivateMessageMapper;
 import Mapper.UserMapper;
 import Mapper.SubscribeMapper;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import Service.MessageService;
+
 import static java.lang.Long.max;
 import static java.lang.Long.min;
 
@@ -51,14 +53,15 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
     @Override
     public void SendStringPrivateMessage(SendStringPrivateMessageDto dto)
     {
-        if(!isSubcribeEachOther(dto.getSenderId(),dto.getReceiverId()))
+        Long senderId = GetUser.getUser().getId();
+        if(!isSubcribeEachOther(senderId,dto.getReceiverId()))
         {
             throw new GlobalException("双方没有互相关注");
         }
 
 
-        RLock lock = redissonClient.getLock(String.join(":",RedisCode.LOCK,dto.getSenderId().toString(),dto.getReceiverId().toString()));
-        String chatKey = String.join(":",Long.valueOf(min(dto.getReceiverId(),dto.getSenderId())).toString(),Long.valueOf(max(dto.getReceiverId(),dto.getSenderId())).toString());
+        RLock lock = redissonClient.getLock(String.join(":",RedisCode.LOCK,Long.valueOf(min(senderId,dto.getReceiverId())).toString(),Long.valueOf(max(senderId,dto.getReceiverId())).toString()));
+        String chatKey = String.join(":",Long.valueOf(min(dto.getReceiverId(),senderId)).toString(),Long.valueOf(max(dto.getReceiverId(),senderId)).toString());
         Long chatId = -1L;
         boolean sign = false;
         try {
@@ -87,6 +90,7 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
             if(sign)lock.unlock();
         }
         PrivateMessage message = CopyProperties.copyProperties(dto, PrivateMessage.class);
+        message.setSenderId(senderId);
         message.setType((short)0);
         message.setChatId(chatId.intValue());
         message.setChatKey(chatKey);
@@ -121,7 +125,7 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
     @Override
     public void Subscribe(Long id)
     {
-        User user = GetUser.getUser();
+        UserSession user = GetUser.getUser();
         Long target_id = subscribeMapper.getSubscribedId(user.getId(),id);
         if(target_id!=null)
         {

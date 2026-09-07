@@ -2,8 +2,7 @@ package DTO;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +20,10 @@ public class LoginDto
     @Size(min = 5,max = 20)
     @Schema(description = "用户密码")
     private String password;
+
+    @NotNull
+    @Max(1)
+    @Min(0)
+    @Schema(description = "用户的终端类型")
+    private Integer terminal;
 }

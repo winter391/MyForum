@@ -12,6 +12,7 @@
         <module>Common</module>
         <module>Login-Register</module>
         <module>IM-platform</module>
+        <module>IM-Server</module>
     </modules>
     <groupId>org.example</groupId>
     <artifactId>MyForum</artifactId>

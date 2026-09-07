@@ -4,9 +4,11 @@ package Entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @TableName("user_subscriber")
 @Data
+@NoArgsConstructor
 public class Subscribe
 {
     private Long id;

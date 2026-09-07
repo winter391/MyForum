@@ -4,8 +4,10 @@ import Code.JwtCode;
 import DTO.LoginDto;
 import DTO.RegisterDto;
 import Entity.User;
+import Entity.UserSession;
 import Mapper.UserMapper;
 import Service.UserService;
+import Util.CopyProperties;
 import Util.JwtUtil;
 import V0.LoginV0;
 import Exception.GlobalException;
@@ -30,8 +32,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         {
             throw new GlobalException("该用户已被封禁");
         }
-        String accessToken = JwtUtil.createToken(user.getId(), JSON.toJSONString(user), JwtCode.accessTokenSecret,JwtCode.accessTokenExpireTime);
-        String refreshToken = JwtUtil.createToken(user.getId(), JSON.toJSONString(user), JwtCode.refreshTokenSecret,JwtCode.refreshTokenExpireTime);
+        UserSession session = CopyProperties.copyProperties(user,UserSession.class);
+        session.setTerminal(dto.getTerminal());
+        String accessToken = JwtUtil.createToken(user.getId(), JSON.toJSONString(session), JwtCode.accessTokenSecret,JwtCode.accessTokenExpireTime);
+        String refreshToken = JwtUtil.createToken(user.getId(), JSON.toJSONString(session), JwtCode.refreshTokenSecret,JwtCode.refreshTokenExpireTime);
         LoginV0 V0 = new LoginV0();
         V0.setId(user.getId());
         V0.setNickName(user.getNickName());

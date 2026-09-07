@@ -27,7 +27,7 @@ public class MessageController
     @PostMapping("/Subscribe")
     public void Subscribe(@RequestBody Long id)
     {
-
+        messageService.Subscribe(id);
     }
 
 

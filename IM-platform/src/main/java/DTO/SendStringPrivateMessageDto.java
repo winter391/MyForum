@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class SendStringPrivateMessageDto
 {
-    private Long senderId;
+
 
 
     private Long receiverId;
