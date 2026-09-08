@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: IM-platform
+    name: Login-Register
 
   config:
     import: classpath:application-common-git.yaml

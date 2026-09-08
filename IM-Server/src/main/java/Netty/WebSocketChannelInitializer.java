@@ -12,9 +12,13 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+
+
+@Component
 public class WebSocketChannelInitializer extends ChannelInitializer<SocketChannel>
 {
     private final RedisTemplate<String,Object> redisTemplate;

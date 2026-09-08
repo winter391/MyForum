@@ -3,11 +3,15 @@ package Controller;
 
 import DTO.SendStringPrivateMessageDto;
 import Service.MessageService;
+import V0.GetFollowersV0;
+import V0.GetSubscribersV0;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/MyForum")
@@ -31,5 +35,16 @@ public class MessageController
     }
 
 
+    @PostMapping("/GetFollowers")
+    public List<GetFollowersV0> GetFollowers()
+    {
+        return messageService.GetFollowers();
+    }
+
+    @PostMapping("/GetSubscribers")
+    public List<GetSubscribersV0> GetSubscribers()
+    {
+        return messageService.Getsubscribers();
+    }
 
 }

@@ -20,7 +20,7 @@ public class UserController
 
 
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Result<LoginV0> Login(@RequestBody @Valid LoginDto dto)
     {
         LoginV0 V0 = userService.Login(dto);

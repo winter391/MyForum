@@ -15,6 +15,9 @@ import Mapper.UserMapper;
 import Mapper.SubscribeMapper;
 import Util.CopyProperties;
 import Util.GetUser;
+import V0.GetFollowersV0;
+import V0.GetSubscribersV0;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -132,5 +135,38 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
             throw new GlobalException("已关注对方");
         }
         subscribeMapper.insert(new Subscribe(user.getId(),id));
+    }
+
+    @Override
+    public List<GetFollowersV0> GetFollowers()
+    {
+        UserSession session = GetUser.getUser();
+        List<Long> ids = subscribeMapper.getSubscriberIds(session.getId());
+        LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
+        query.select(User::getId,User::getNickName).in(User::getId,ids);
+        List<User> users = userMapper.selectList(query);
+        List<GetFollowersV0> res = new ArrayList<>();
+        for(User temp_user:users)
+        {
+            res.add(CopyProperties.copyProperties(temp_user, GetFollowersV0.class));
+        }
+        return res;
+    }
+
+
+    @Override
+    public List<GetSubscribersV0> Getsubscribers()
+    {
+        UserSession session = GetUser.getUser();
+        List<Long> ids = subscribeMapper.getSubscribedIds(session.getId());
+        LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
+        query.select(User::getId,User::getNickName).in(User::getId,ids);
+        List<User> users = userMapper.selectList(query);
+        List<GetSubscribersV0> res = new ArrayList<>();
+        for(User temp_user:users)
+        {
+            res.add(CopyProperties.copyProperties(temp_user, GetSubscribersV0.class));
+        }
+        return res;
     }
 }
