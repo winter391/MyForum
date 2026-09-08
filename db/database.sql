@@ -38,3 +38,20 @@ create table private_message
     type tinyint comment '文件类型，0：文字，1：文件',
     chat_id int comment '会话内id，标识这是两个人之间发的第几条消息'
 )engine = InnoDB charset  = utf8mb4 comment '这张表存储了私聊消息'
+
+
+create table post
+(
+    id bigint primary key comment '帖子的主键，无实际意义',
+    title varchar(255) comment '帖子的标题',
+    content text comment '帖子的内容',
+    publisher_nickname varchar(255) comment '帖子发布者的昵称',
+    publisher_id bigint comment '发布者的id',
+    bar_name varchar(255) comment '帖子属于的贴吧名字',
+    bar_id bigint comment '这个帖子所属的贴吧的id',
+    pin tinyint default 0 comment '这个帖子在它所属的贴吧中是否置顶',
+    view_count int default 0 comment'这个帖子的浏览量',
+    like_count int default 0 comment '这个帖子的点赞数',
+    comment_count int default 0 comment '这个帖子的评论数'
+
+) engine=InnoDB charset = utf8mb4 comment '这张表存储了帖子的信息'
