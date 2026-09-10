@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("post")
-public class Post
+@TableName("post_published")
+public class PublishedPost
 {
     private Long id;
 

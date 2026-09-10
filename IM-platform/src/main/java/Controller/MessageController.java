@@ -2,6 +2,8 @@ package Controller;
 
 
 import DTO.SendStringPrivateMessageDto;
+import Result.Result;
+import Result.ResultUtil;
 import Service.MessageService;
 import V0.GetFollowersV0;
 import V0.GetSubscribersV0;
@@ -22,29 +24,31 @@ public class MessageController
 
 
     @PostMapping("/SendStringPrivateMessage")
-    public void SendStringPrivateMessage(@RequestBody SendStringPrivateMessageDto dto)
+    public Result<?> SendStringPrivateMessage(@RequestBody SendStringPrivateMessageDto dto)
     {
         messageService.SendStringPrivateMessage(dto);
+        return ResultUtil.success();
     }
 
 
     @PostMapping("/Subscribe")
-    public void Subscribe(@RequestBody Long id)
+    public Result<?> Subscribe(@RequestBody Long id)
     {
         messageService.Subscribe(id);
+        return ResultUtil.success();
     }
 
 
     @PostMapping("/GetFollowers")
-    public List<GetFollowersV0> GetFollowers()
+    public Result<List<GetFollowersV0>> GetFollowers()
     {
-        return messageService.GetFollowers();
+        return ResultUtil.success(messageService.GetFollowers());
     }
 
     @PostMapping("/GetSubscribers")
-    public List<GetSubscribersV0> GetSubscribers()
+    public Result<List<GetSubscribersV0>> GetSubscribers()
     {
-        return messageService.Getsubscribers();
+        return ResultUtil.success(messageService.Getsubscribers());
     }
 
 }

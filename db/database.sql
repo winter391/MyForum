@@ -14,7 +14,7 @@ create table User(
                      type tinyint default 0 comment '用户类型，0：为普通用户，1：为管理员用户',
                      create_time datetime default current_timestamp comment '用户创建时间',
                      login_time datetime comment '用户最后登录时间'
-) engine=InnoDB charset = utf8mb4 comment '用户表，存储了用户的信息'
+) engine=InnoDB charset = utf8mb4 comment '用户表，存储了用户的信息';
 
 
 
@@ -25,7 +25,7 @@ create table user_subscriber
     subscribed_id bigint comment '被关注的人',
 
     constraint subscriber_foreign_key  foreign key (subscriber_id) references user(id) on update cascade on delete  cascade
-) engine=InnoDB charset = utf8mb4 comment '这张表记录了关注关系，即一个人关注另一个人的关系'
+) engine=InnoDB charset = utf8mb4 comment '这张表记录了关注关系，即一个人关注另一个人的关系';
 
 
 
@@ -37,10 +37,11 @@ create table private_message
     message varchar(255) comment '消息本体，如果是文件那么存储的就是url',
     type tinyint comment '文件类型，0：文字，1：文件',
     chat_id int comment '会话内id，标识这是两个人之间发的第几条消息'
-)engine = InnoDB charset  = utf8mb4 comment '这张表存储了私聊消息'
+)engine = InnoDB charset  = utf8mb4 comment '这张表存储了私聊消息';
 
 
-create table post
+
+create table post_published
 (
     id bigint primary key comment '帖子的主键，无实际意义',
     title varchar(255) comment '帖子的标题',
@@ -54,4 +55,19 @@ create table post
     like_count int default 0 comment '这个帖子的点赞数',
     comment_count int default 0 comment '这个帖子的评论数'
 
-) engine=InnoDB charset = utf8mb4 comment '这张表存储了帖子的信息'
+) engine=InnoDB charset = utf8mb4 comment '这张表存储了已经发布的帖子的信息';
+
+
+create table post_unpublished
+(
+    id bigint primary key comment '帖子的主键，无实际意义',
+    title varchar(255) comment '帖子的标题',
+    content text comment '帖子的内容',
+    publisher_nickname varchar(255) comment '帖子发布者的昵称',
+    publisher_id bigint comment '发布者的id',
+    bar_name varchar(255) comment '帖子属于的贴吧名字',
+    bar_id bigint comment '这个帖子所属的贴吧的id'
+
+) engine=InnoDB charset = utf8mb4 comment '这张表存储了还没有发布帖子的信息';
+
+
