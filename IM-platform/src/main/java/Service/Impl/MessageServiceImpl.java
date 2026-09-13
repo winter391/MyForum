@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import Service.MessageService;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.Long.max;
 import static java.lang.Long.min;

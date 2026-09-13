@@ -14,6 +14,7 @@
         <module>IM-platform</module>
         <module>IM-Server</module>
         <module>Forum-Post</module>
+        <module>Forum-Bar</module>
     </modules>
     <groupId>org.example</groupId>
     <artifactId>MyForum</artifactId>

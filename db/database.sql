@@ -71,3 +71,35 @@ create table post_unpublished
 ) engine=InnoDB charset = utf8mb4 comment '这张表存储了还没有发布帖子的信息';
 
 
+
+
+
+create table bar
+(
+    id bigint primary key comment '本张表的主键，无实际意义',
+    name varchar(255) comment '贴吧的名字',
+    description varchar(255) default '' comment '贴吧的简介',
+    cover_image varchar(255) default '' comment '贴吧头像的url地址',
+    member_count int default 0 comment '贴吧的成员数',
+    post_count int default 0 comment '贴吧里帖子的数量',
+    master_id bigint comment '吧主的id',
+    master_nickname varchar(255) comment '吧主的昵称',
+    is_banned tinyint default 0 comment '贴吧是否被封禁',
+    post_permission tinyint default 0 comment '发帖权限，0：所有人可发帖，1：仅成员可发帖'
+)engine=InnoDB charset = utf8mb4 comment '本张表储存了贴吧的相关信息';
+
+
+
+
+
+
+
+create table bar_member
+(
+    id bigint primary key comment '这张表的主键，无实际意义',
+    bar_id bigint comment '用户属于哪个贴吧',
+    user_id bigint comment '属于该贴吧的成员',
+    identity int comment '该用户在该贴吧的身份，0：普通用户，1：管理员，2：吧主',
+    is_banned tinyint comment '该用户在该贴吧中是否被封禁',
+    unique key bar_member_unique (bar_id, user_id)
+)engine=InnoDB charset = utf8mb4 comment '本张表为了储存各个用户在各个贴吧中的状态';

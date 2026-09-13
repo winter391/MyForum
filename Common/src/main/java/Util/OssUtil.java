@@ -78,7 +78,7 @@ public class OssUtil
 
                 List<OSSObjectSummary> sums = result.getObjectSummaries();
                 for (OSSObjectSummary s : sums) {
-                    String url = "https://" + OssCode.bucketName + "." + OssCode.endPoint + "/" +OssCode.filePath+"/"+ s.getKey();
+                    String url = "https://" + OssCode.bucketName + "." + OssCode.endPoint + "/" + s.getKey();
                     if(!set.contains(url))
                     {
                         ossClient.deleteObject(OssCode.bucketName,s.getKey());
