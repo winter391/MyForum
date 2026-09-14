@@ -13,6 +13,6 @@ public class WebMvcConfig implements WebMvcConfigurer
     {
         registry.addInterceptor(new interceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/MyForum/login","/MyForum/register");
+                .excludePathPatterns("/MyForum/login","/MyForum/register","/MyForum/refreshToken");
     }
 }

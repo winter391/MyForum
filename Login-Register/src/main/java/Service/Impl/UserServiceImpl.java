@@ -2,6 +2,7 @@ package Service.Impl;
 
 import Code.JwtCode;
 import DTO.LoginDto;
+import DTO.RefreshTokenDto;
 import DTO.RegisterDto;
 import Entity.User;
 import Entity.UserSession;
@@ -45,6 +46,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         V0.setAccessTokenExpireTime(JwtCode.accessTokenExpireTime);
         V0.setRefreshToken(refreshToken);
         V0.setRefreshTokenExpireTime(JwtCode.refreshTokenExpireTime);
+        return V0;
+    }
+
+    @Override
+    public LoginV0 RefreshToken(RefreshTokenDto dto)
+    {
+        if(!JwtUtil.verifyToken(dto.getRefreshToken(), JwtCode.refreshTokenSecret))
+        {
+            throw new GlobalException("refreshToken失效，请重新登录");
+        }
+        UserSession oldSession = JSON.parseObject(JwtUtil.getInfo(dto.getRefreshToken(),JwtCode.refreshTokenSecret),UserSession.class);
+        User user = getById(oldSession.getId());
+        if(user==null)
+        {
+            throw new GlobalException("该用户不存在");
+        }
+        if(user.getIsBanned())
+        {
+            throw new GlobalException("该用户已被封禁");
+        }
+        UserSession session = CopyProperties.copyProperties(user,UserSession.class);
+        session.setTerminal(oldSession.getTerminal());
+        String accessToken = JwtUtil.createToken(user.getId(), JSON.toJSONString(session), JwtCode.accessTokenSecret,JwtCode.accessTokenExpireTime);
+        LoginV0 V0 = new LoginV0();
+        V0.setId(user.getId());
+        V0.setNickName(user.getNickName());
+        V0.setAccessToken(accessToken);
+        V0.setAccessTokenExpireTime(JwtCode.accessTokenExpireTime);
         return V0;
     }
 

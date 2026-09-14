@@ -117,6 +117,13 @@ public class BarController
         return ResultUtil.success();
     }
 
+    @PostMapping("/setPostPin")
+    public Result<?> setPostPin(@RequestBody @Valid SetPostPinDto dto)
+    {
+        barService.setPostPin(dto);
+        return ResultUtil.success();
+    }
+
     @PostMapping("/getBar")
     public Result<Bar> getBar(@RequestBody @Valid BarIdDto dto)
     {

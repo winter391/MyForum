@@ -1,6 +1,7 @@
 package Service;
 
 import DTO.LoginDto;
+import DTO.RefreshTokenDto;
 import DTO.RegisterDto;
 import Entity.User;
 import V0.LoginV0;
@@ -11,4 +12,6 @@ public interface UserService extends IService<User>
     public LoginV0 Login(LoginDto dto);
 
     public boolean Register(RegisterDto dto);
+
+    public LoginV0 RefreshToken(RefreshTokenDto dto);
 }

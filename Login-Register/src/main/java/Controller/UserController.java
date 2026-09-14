@@ -2,6 +2,7 @@ package Controller;
 
 
 import DTO.LoginDto;
+import DTO.RefreshTokenDto;
 import DTO.RegisterDto;
 import Result.Result;
 import Result.ResultUtil;
@@ -25,6 +26,12 @@ public class UserController
     {
         LoginV0 V0 = userService.Login(dto);
         return ResultUtil.success(V0);
+    }
+
+    @PostMapping("/refreshToken")
+    public Result<LoginV0> RefreshToken(@RequestBody @Valid RefreshTokenDto dto)
+    {
+        return ResultUtil.success(userService.RefreshToken(dto));
     }
 
     @PostMapping("/register")

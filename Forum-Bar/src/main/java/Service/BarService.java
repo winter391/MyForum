@@ -34,6 +34,8 @@ public interface BarService extends IService<Bar>
 
     public void setPostPermission(SetPostPermissionDto dto);
 
+    public void setPostPin(SetPostPinDto dto);
+
     public Bar getBar(Long barId);
 
     public List<BarMember> getBarMembers(Long barId);

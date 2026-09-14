@@ -235,6 +235,20 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
     }
 
 
+    private void checkBarNotBanned(Long barId)
+    {
+        if(barId==null)
+        {
+            return;
+        }
+        Bar bar = barMapper.selectById(barId);
+        if(bar!=null&&Integer.valueOf(1).equals(bar.getIsBanned()))
+        {
+            throw new GlobalException("该贴吧已被封禁");
+        }
+    }
+
+
     @Override
     public PublishedPost getPublishedPost(Long id)
     {
@@ -243,6 +257,7 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         {
             throw new GlobalException("该帖子不存在");
         }
+        checkBarNotBanned(post.getBarId());
         getBaseMapper().addViewCount(id);
         post.setViewCount(post.getViewCount()+1);
         return post;
@@ -251,6 +266,7 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
     @Override
     public Page<PublishedPost> getPublishedPosts(GetPublishedPostsDto dto)
     {
+        checkBarNotBanned(dto.getBarId());
         LambdaQueryWrapper<PublishedPost> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PublishedPost::getBarId, dto.getBarId());
         wrapper.orderByDesc(PublishedPost::getPin);

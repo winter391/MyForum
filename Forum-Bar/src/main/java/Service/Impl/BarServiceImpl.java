@@ -4,10 +4,12 @@ import Dto.*;
 import Code.BarCode;
 import Entity.Bar;
 import Entity.BarMember;
+import Entity.PublishedPost;
 import Entity.UserSession;
 import Exception.GlobalException;
 import Mapper.BarMapper;
 import Mapper.BarMemberMapper;
+import Mapper.PublishedPostMapper;
 import Service.BarService;
 import Util.GetUser;
 import Util.OssUtil;
@@ -28,6 +30,9 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
 
     @Autowired
     private BarMemberMapper barMemberMapper;
+
+    @Autowired
+    private PublishedPostMapper publishedPostMapper;
 
 
     @Override
@@ -250,6 +255,29 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
 
     @Override
     @Transactional
+    public void setPostPin(SetPostPinDto dto)
+    {
+        UserSession session = GetUser.getUser();
+        BarMember operator = getMemberOrThrow(dto.getBarId(), session.getId());
+        if (operator.getIdentity() < BarCode.IDENTITY_ADMIN)
+        {
+            throw new GlobalException("您没有权限置顶或取消置顶该帖子");
+        }
+        PublishedPost post = publishedPostMapper.selectById(dto.getPostId());
+        if (post == null)
+        {
+            throw new GlobalException("该帖子不存在");
+        }
+        if (!dto.getBarId().equals(post.getBarId()))
+        {
+            throw new GlobalException("该帖子不属于该贴吧");
+        }
+        post.setPin(dto.getPin());
+        publishedPostMapper.updateById(post);
+    }
+
+    @Override
+    @Transactional
     public void setPostPermission(SetPostPermissionDto dto)
     {
         UserSession session = GetUser.getUser();
@@ -268,7 +296,8 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     @Override
     public List<BarMember> getBarMembers(Long barId)
     {
-        getBarOrThrow(barId);
+        Bar bar = getBarOrThrow(barId);
+        checkBarNotBanned(bar);
         List<BarMember> members = barMemberMapper.getBarMembersByBarId(barId);
         if (members == null)
         {
