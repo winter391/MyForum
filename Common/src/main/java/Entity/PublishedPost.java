@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,4 +34,6 @@ public class PublishedPost
     private Integer likeCount;
 
     private Integer commentCount;
+
+    private Date createTime;
 }

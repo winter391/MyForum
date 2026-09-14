@@ -7,7 +7,9 @@ import Entity.UnPublishedPost;
 import Result.Result;
 import Result.ResultUtil;
 import Service.PostService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +76,19 @@ public class PostController
     {
         postService.updateUnPublishedPost(dto);
         return ResultUtil.success();
+    }
+
+
+    @PostMapping("/getPublishedPost")
+    public Result<PublishedPost> getPublishedPost(@RequestBody @Valid GetPublishedPostDto dto)
+    {
+        return ResultUtil.success(postService.getPublishedPost(dto.getPostId()));
+    }
+
+    @PostMapping("/getPublishedPosts")
+    public Result<Page<PublishedPost>> getPublishedPosts(@RequestBody @Valid GetPublishedPostsDto dto)
+    {
+        return ResultUtil.success(postService.getPublishedPosts(dto));
     }
 
 }

@@ -11,6 +11,6 @@ public class CreateBarDto
     @Size(max = 10, message = "贴吧名字长度不能超过10个字符")
     private String name;
 
-    @Size(max = 255, message = "贴吧简介长度不能超过255个字符")
+    @Size(max = 200, message = "贴吧简介长度不能超过200个字符")
     private String description;
 }

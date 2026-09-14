@@ -53,7 +53,8 @@ create table post_published
     pin tinyint default 0 comment '这个帖子在它所属的贴吧中是否置顶',
     view_count int default 0 comment'这个帖子的浏览量',
     like_count int default 0 comment '这个帖子的点赞数',
-    comment_count int default 0 comment '这个帖子的评论数'
+    comment_count int default 0 comment '这个帖子的评论数',
+    create_time datetime comment '这个帖子的发布时间'
 
 ) engine=InnoDB charset = utf8mb4 comment '这张表存储了已经发布的帖子的信息';
 
