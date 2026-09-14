@@ -16,6 +16,7 @@ import Util.PostUtil;
 import Util.OssUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
                 set.add(block.getContent());
             }
         }
-        OssUtil.ForEachDelete(set,"Post/"+unPublishedPost.getPublisherId()+"/");
+        OssUtil.ForEachDelete(set,"Post/"+unPublishedPost.getPublisherId()+"/"+PostId+"/");
         Long old_id = unPublishedPost.getId();
         unPublishedPost.setId(null);
         PublishedPost res = CopyProperties.copyProperties(unPublishedPost,PublishedPost.class);
@@ -81,15 +82,20 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
     }
 
     @Override
-    public String uploadImage(InputStream inputStream,Long userId)
+    public String uploadImage(InputStream inputStream,Long userId,Long postId)
     {
         UserSession session = GetUser.getUser();
         if(!session.getId().equals(userId))
         {
             throw new GlobalException("您没有权限上传该文件");
         }
+        UnPublishedPost post = unPublishedPostMapper.selectById(postId);
+        if(post==null||!post.getPublisherId().equals(userId))
+        {
+            throw new GlobalException("该草稿不存在");
+        }
         String fileName = Long.valueOf(System.currentTimeMillis()).toString() + ".jpg";
-        String filePath = "Post/"+userId.toString()+"/";
+        String filePath = "Post/"+userId.toString()+"/"+postId.toString()+"/";
         String res = OssUtil.upLoadFile(inputStream,fileName,filePath);
         if(res==null)
         {
@@ -99,25 +105,33 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
     }
 
     @Override
-    public void uploadUnPublishedPost(UploadUnPublishedPostDto dto)
+    public Long uploadUnPublishedPost(UploadUnPublishedPostDto dto)
     {
         UserSession session = GetUser.getUser();
         checkBarPostPermission(dto.getBarId(), session.getId());
         UnPublishedPost post = CopyProperties.copyProperties(dto,UnPublishedPost.class);
         post.setPublisherId(session.getId());
         post.setPublisherNickname(session.getNickName());
-        PostSave postSave = JSON.parseObject(post.getContent(),PostSave.class);
-        for(PostSaveBlock block:postSave.getBlocks())
+        post.setId(IdWorker.getId());
+        if(post.getContent()!=null)
         {
-            if(block.getType().equals("image"))
+            PostSave postSave = JSON.parseObject(post.getContent(),PostSave.class);
+            if(postSave!=null&&postSave.getBlocks()!=null)
             {
-                if(!PostUtil.verifyPostPath(block.getContent(),session.getId()))
+                for(PostSaveBlock block:postSave.getBlocks())
                 {
-                    throw new GlobalException("错误的文件路径");
+                    if(block.getType().equals("image"))
+                    {
+                        if(!PostUtil.verifyPostPath(block.getContent(),session.getId(),post.getId()))
+                        {
+                            throw new GlobalException("错误的文件路径");
+                        }
+                    }
                 }
             }
         }
         unPublishedPostMapper.insert(post);
+        return post.getId();
     }
 
 
@@ -136,20 +150,26 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         }
         checkBarPostPermission(dto.getDto().getBarId(), session.getId());
         UnPublishedPost post = CopyProperties.copyProperties(dto.getDto(),UnPublishedPost.class);
-        PostSave postSave = JSON.parseObject(post.getContent(),PostSave.class);
-        Set<String> set = new HashSet<>();
-        for(PostSaveBlock block:postSave.getBlocks())
+        if(post.getContent()!=null)
         {
-            if(block.getType().equals("image"))
+            PostSave postSave = JSON.parseObject(post.getContent(),PostSave.class);
+            Set<String> set = new HashSet<>();
+            if(postSave!=null&&postSave.getBlocks()!=null)
             {
-                if(!PostUtil.verifyPostPath(block.getContent(),session.getId()))
+                for(PostSaveBlock block:postSave.getBlocks())
                 {
-                    throw new GlobalException("错误的文件路径");
+                    if(block.getType().equals("image"))
+                    {
+                        if(!PostUtil.verifyPostPath(block.getContent(),session.getId(),unPublishedPost.getId()))
+                        {
+                            throw new GlobalException("错误的文件路径");
+                        }
+                        set.add(block.getContent());
+                    }
                 }
-                set.add(block.getContent());
             }
+            OssUtil.ForEachDelete(set,"Post/"+unPublishedPost.getPublisherId()+"/"+unPublishedPost.getId()+"/");
         }
-        OssUtil.ForEachDelete(set,"Post/"+unPublishedPost.getPublisherId()+"/");
         post.setId(unPublishedPost.getId());
         unPublishedPostMapper.updateById(post);
     }

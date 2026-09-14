@@ -15,9 +15,9 @@ public interface PostService extends IService<PublishedPost>
 {
     public void uploadPublishedPost(Long PostId);
 
-    public String uploadImage(InputStream inputStream, Long userId);
+    public String uploadImage(InputStream inputStream, Long userId, Long postId);
 
-    public void uploadUnPublishedPost(UploadUnPublishedPostDto dto);
+    public Long uploadUnPublishedPost(UploadUnPublishedPostDto dto);
 
     public List<Long> getUnPublishedPostIds();
 

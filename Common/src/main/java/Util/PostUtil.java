@@ -8,38 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostUtil
 {
-    public static boolean verifyPostPath(String url,Long userId)
+    public static boolean verifyPostPath(String url,Long userId,Long postId)
     {
-        Integer head_length =8+ OssCode.bucketName.length()+1+OssCode.endPoint.length()+1+OssCode.filePath.length()+6;
-        Integer id_length = userId.toString().length()+1;
-        Integer timeStampLength = 13;
-        Integer tailLength = 4;
-        if(head_length+id_length+timeStampLength+tailLength!=url.length()) return false;
-        String head = url.substring(0,head_length);
-        String id = url.substring(head_length,id_length+head_length);
-        String timeStamp = url.substring(head_length+id_length,head_length+id_length+timeStampLength);
-        String tail = url.substring(head_length+id_length+timeStampLength,head_length+id_length+timeStampLength+tailLength);
-
-        String correct_head = "https://"+OssCode.bucketName+"."+OssCode.endPoint+"/"+OssCode.filePath+"/"+"Post"+"/";
-        if(!head.equals(correct_head))
-        {
-            return false;
-        }
-        if(!id.equals(userId.toString()+"/"))
-        {
-            return false;
-        }
-        for(char num:timeStamp.toCharArray())
-        {
-            if(!Character.isDigit(num))
-            {
-                return false;
-            }
-        }
-        if(!tail.equals(".jpg"))
-        {
-            return false;
-        }
-        return true;
+        String correct_head = "https://"+OssCode.bucketName+"."+OssCode.endPoint+"/"+OssCode.filePath+"/"+"Post"+"/"+userId+"/"+postId+"/";
+        return url.startsWith(correct_head)&&url.endsWith(".jpg");
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/MyForum")
 @Slf4j
@@ -28,11 +30,11 @@ public class PostController
 
 
     @PostMapping("/uploadImage")
-    public Result<?> uploadImage(MultipartFile request, @RequestBody UploadImageDto dto)
+    public Result<?> uploadImage(MultipartFile request, @RequestBody @Valid UploadImageDto dto)
     {
         try
         {
-            return ResultUtil.success(postService.uploadImage(request.getInputStream(),dto.getUserId()));
+            return ResultUtil.success(postService.uploadImage(request.getInputStream(),dto.getUserId(),dto.getPostId()));
         }
         catch(Exception e)
         {
@@ -51,10 +53,9 @@ public class PostController
 
 
     @PostMapping("/uploadUnPublishedPost")
-    public Result<?> upLoadUnPublishedPost(@RequestBody UploadUnPublishedPostDto dto)
+    public Result<Long> upLoadUnPublishedPost(@RequestBody @Valid UploadUnPublishedPostDto dto)
     {
-        postService.uploadUnPublishedPost(dto);
-        return ResultUtil.success();
+        return ResultUtil.success(postService.uploadUnPublishedPost(dto));
     }
 
     @PostMapping("/getUnPublishedPostIds")
