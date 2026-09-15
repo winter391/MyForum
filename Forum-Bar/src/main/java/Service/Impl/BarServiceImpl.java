@@ -269,6 +269,8 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     public void setPostPin(SetPostPinDto dto)
     {
         UserSession session = GetUser.getUser();
+        Bar bar = getBarOrThrow(dto.getBarId());
+        checkBarNotBanned(bar);
         BarMember operator = getMemberOrThrow(dto.getBarId(), session.getId());
         if (operator.getIdentity() < BarCode.IDENTITY_ADMIN)
         {
@@ -294,6 +296,7 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
         UserSession session = GetUser.getUser();
         checkMaster(dto.getBarId(), session.getId());
         Bar bar = getBarOrThrow(dto.getBarId());
+        checkBarNotBanned(bar);
         bar.setPostPermission(dto.getPostPermission());
         updateById(bar);
     }
@@ -301,7 +304,9 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     @Override
     public Bar getBar(Long barId)
     {
-        return getBarOrThrow(barId);
+        Bar bar = getBarOrThrow(barId);
+        checkBarNotBanned(bar);
+        return bar;
     }
 
     @Override
