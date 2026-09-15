@@ -104,3 +104,27 @@ create table bar_member
     is_banned tinyint comment '该用户在该贴吧中是否被封禁',
     unique key bar_member_unique (bar_id, user_id)
 )engine=InnoDB charset = utf8mb4 comment '本张表为了储存各个用户在各个贴吧中的状态';
+
+
+
+
+create table comment
+(
+    id bigint primary key comment '本张表的主键，无实际意义',
+    content varchar(255) comment '评论本体',
+    publisher_id bigint comment '发布者的id',
+    publisher_nickname varchar(255) comment '发布者的昵称',
+    post_id bigint comment '所属帖子的id',
+    parent_id bigint comment '所回复的评论的id',
+    like_count int default 0 comment '点赞数',
+    create_time datetime default CURRENT_TIMESTAMP comment '评论的创建时间',
+    is_banned tinyint default 0 comment '评论是否被封禁'
+)engine=InnoDB charset = utf8mb4 comment '评论表，存储了帖子的评论信息';
+
+create table comment_like
+(
+    id bigint primary key comment '本张表的主键，无实际意义',
+    comment_id bigint comment '被点赞的评论的id',
+    user_id bigint comment '点赞用户的id',
+    unique key comment_like_unique (comment_id, user_id)
+)engine=InnoDB charset = utf8mb4 comment '这张表存储了每个用户对每条评论的点赞记录，用来防止重复点赞';
