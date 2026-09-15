@@ -16,6 +16,7 @@
         <module>Forum-Post</module>
         <module>Forum-Bar</module>
         <module>Forum-Comment</module>
+        <module>Forum-Feed</module>
     </modules>
     <groupId>org.example</groupId>
     <artifactId>MyForum</artifactId>

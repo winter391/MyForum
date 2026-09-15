@@ -1,5 +1,6 @@
 package Service.Impl;
 
+import Code.UserCode;
 import Dto.*;
 import Code.BarCode;
 import Entity.Bar;
@@ -40,6 +41,10 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     public void createBar(CreateBarDto dto)
     {
         UserSession session = GetUser.getUser();
+        if(session.getIsBanned().equals(UserCode.banned))
+        {
+            throw new GlobalException("您已被封禁，无法创建贴吧");
+        }
         Long oldId = getBaseMapper().getBarIdByName(dto.getName());
         if (oldId != null)
         {
@@ -57,7 +62,7 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
         member.setBarId(bar.getId());
         member.setUserId(session.getId());
         member.setIdentity(BarCode.IDENTITY_MASTER);
-        member.setIsBanned(0);
+        member.setIsBanned(UserCode.NotBanned);
         barMemberMapper.insert(member);
     }
 
@@ -82,6 +87,7 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     {
         UserSession session = GetUser.getUser();
         Bar bar = getBarOrThrow(dto.getId());
+        checkBarNotBanned(bar);
         if (!bar.getMasterId().equals(session.getId()))
         {
             throw new GlobalException("您没有权限修改该贴吧");
@@ -112,6 +118,7 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     {
         UserSession session = GetUser.getUser();
         Bar bar = getBarOrThrow(barId);
+        checkBarNotBanned(bar);
         if (!bar.getMasterId().equals(session.getId()))
         {
             throw new GlobalException("您没有权限上传该文件");
@@ -153,6 +160,8 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     public void leaveBar(Long barId)
     {
         UserSession session = GetUser.getUser();
+        Bar bar = getBarOrThrow(barId);
+        checkBarNotBanned(bar);
         BarMember member = getMemberOrThrow(barId, session.getId());
         if (member.getIdentity() >= BarCode.IDENTITY_ADMIN)
         {
@@ -167,6 +176,8 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     public void kickMember(BarMemberDto dto)
     {
         UserSession session = GetUser.getUser();
+        Bar bar = getBarOrThrow(dto.getBarId());
+        checkBarNotBanned(bar);
         BarMember operator = getMemberOrThrow(dto.getBarId(), session.getId());
         if (operator.getIdentity() < BarCode.IDENTITY_ADMIN)
         {

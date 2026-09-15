@@ -19,7 +19,7 @@ public class UserSession
 
     private Short sex;
 
-    private Boolean isBanned;
+    private Integer isBanned;
 
     private String headImage;
 
