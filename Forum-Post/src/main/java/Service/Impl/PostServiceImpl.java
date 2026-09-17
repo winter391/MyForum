@@ -4,7 +4,11 @@ import Dto.GetPublishedPostsDto;
 import Dto.UpdateUnPublishedPostDto;
 import Dto.UploadUnPublishedPostDto;
 import Entity.*;
+import Code.NotificationCode;
 import Code.PostCode;
+import Code.SystemMessageTypeCode;
+import Message.MessagePack;
+import Message.SubscribeMessage;
 import Mapper.BarMapper;
 import Mapper.BarMemberMapper;
 import Mapper.PublishedPostMapper;
@@ -19,10 +23,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import Exception.GlobalException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,6 +43,8 @@ import java.util.Set;
 public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedPost> implements PostService
 {
 
+
+
     @Autowired
     private UnPublishedPostMapper unPublishedPostMapper;
 
@@ -44,6 +53,9 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
 
     @Autowired
     private BarMemberMapper barMemberMapper;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
 
 
@@ -78,6 +90,31 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         PublishedPost res = CopyProperties.copyProperties(unPublishedPost,PublishedPost.class);
         save(res);
         unPublishedPostMapper.deleteById(old_id);
+        //发布成功后，向通知链路发送消息，由Forum-Notification推送给发布者的所有粉丝
+        SubscribeMessage subscribeMessage = new SubscribeMessage();
+        subscribeMessage.setPublisherId(res.getPublisherId());
+        subscribeMessage.setPublisherNickname(res.getPublisherNickname());
+        subscribeMessage.setPostId(res.getId());
+        subscribeMessage.setPostTitle(res.getTitle());
+        subscribeMessage.setBarName(res.getBarName());
+        //MessagePack包装领域消息，json序列化之后存入SystemMessage的message字段，队列里传输的是整个SystemMessage
+        MessagePack<SubscribeMessage> messagePack = new MessagePack<>();
+        messagePack.setType(SystemMessageTypeCode.suscribe);
+        messagePack.setMessage(subscribeMessage);
+        //这里传输的是一个消息模板：id在落库时生成，receiverId和chatId是每个粉丝各自不同的值，
+        //由Forum-Notification在扇出时按粉丝逐一填充，所以这三项在这里留空
+        SystemMessage systemMessage = new SystemMessage();
+        systemMessage.setMessage(JSON.toJSONString(messagePack));
+        systemMessage.setType(SystemMessageTypeCode.text);
+        //发送必须在事务提交之后进行，否则消息可能先于数据库提交到达，粉丝会收到一个指向不存在帖子的通知
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+        {
+            @Override
+            public void afterCommit()
+            {
+                rabbitTemplate.convertAndSend(NotificationCode.EXCHANGER, NotificationCode.POST_ROUTING_KEY, systemMessage);
+            }
+        });
     }
 
     @Override

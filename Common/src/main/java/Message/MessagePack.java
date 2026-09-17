@@ -2,8 +2,9 @@ package Message;
 
 import lombok.Data;
 
-//该类是发往通知队列的消息的统一外壳
-//Forum-Post等生产者把它发到notification交换机，Forum-Notification监听队列后根据type分发处理
+//该类是SystemMessage的message字段的统一内容格式
+//Forum-Notification组装SystemMessage时把领域消息包进该类，json序列化后存入message字段
+//推送时传输的是整个SystemMessage，客户端根据type解析message
 @Data
 public class MessagePack<T>
 {

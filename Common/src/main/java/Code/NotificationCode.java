@@ -17,12 +17,6 @@ public class NotificationCode
     //帖子通知的路由键
     public static String POST_ROUTING_KEY;
 
-    //MessagePack的type：关注推送，关注的人发布了帖子
-    public static short MESSAGE_TYPE_SUBSCRIBE = 0;
-
-    //MessagePack的type：系统聊天消息
-    public static short MESSAGE_TYPE_CHAT = 1;
-
     @Value("${spring.rabbitmq.code.notification-exchanger}")
     public void setExchanger(String exchanger) {
         EXCHANGER = exchanger;
