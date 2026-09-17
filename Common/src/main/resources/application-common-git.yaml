@@ -27,6 +27,13 @@ spring:
     publisher-returns: true
     code:
       main-exchanger: main
+      server-id: "serverId:"
+      message-type: "messageType:"
+      private-message: "privateMessage"
+      system-message: "systemMessage"
+      notification-exchanger: "notification"
+      notification-post-queue: "notificationPost"
+      notification-post-routing-key: "post"
 
   data:
     redis:
@@ -41,3 +48,7 @@ spring:
           max-wait: 3000
     code:
       online-user-terminal-key: "onlineUserTerminal"
+      lock: "lock"
+      chat-key_to-chat-id: "chatKey:ChatId"
+      waiting-time: 30
+      expire-time: 60
