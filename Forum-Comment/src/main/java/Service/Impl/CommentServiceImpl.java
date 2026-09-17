@@ -52,6 +52,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         //校验帖子所属的贴吧没有被封禁，且用户没有在该贴吧内被禁言
         checkBarState(post.getBarId(), session.getId());
+        //被封禁的帖子不能被查看，也不能对它发布评论
+        checkPostNotBanned(post);
         //校验所回复的评论存在，且和当前评论属于同一篇帖子
         if(dto.getParentId()!=null)
         {
@@ -138,6 +140,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
         //被封禁的贴吧，任何人都不可以查看其中的帖子，评论也一并不可查看
         checkBarNotBanned(post.getBarId());
+        //被封禁的帖子不能被查看，它下面的评论也一并不可查看
+        checkPostNotBanned(post);
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Comment::getPostId, dto.getPostId());
         //被封禁的评论不返回
@@ -162,6 +166,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return page(page, wrapper);
     }
 
+
+    //校验帖子没有被封禁，被封禁的帖子不能被用户获取
+    private void checkPostNotBanned(PublishedPost post)
+    {
+        if(Integer.valueOf(1).equals(post.getIsBanned()))
+        {
+            throw new GlobalException("该帖子已被封禁");
+        }
+    }
 
     //校验帖子所属的贴吧没有被封禁，被封禁的贴吧内任何内容都不可查看
     //吧不存在或者帖子没有所属贴吧时不做校验

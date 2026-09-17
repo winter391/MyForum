@@ -43,6 +43,8 @@ public class FeedServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         wrapper.in(PublishedPost::getPublisherId, followIds);
         //排除被封禁贴吧的帖子
         excludeBannedBar(wrapper);
+        //排除被封禁的帖子
+        excludeBannedPost(wrapper);
         //按发布时间排序，新的在前，id做次级排序保证翻页顺序稳定
         wrapper.orderByDesc(PublishedPost::getCreateTime);
         wrapper.orderByDesc(PublishedPost::getId);
@@ -55,6 +57,8 @@ public class FeedServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         LambdaQueryWrapper<PublishedPost> wrapper = new LambdaQueryWrapper<>();
         //排除被封禁贴吧的帖子
         excludeBannedBar(wrapper);
+        //排除被封禁的帖子
+        excludeBannedPost(wrapper);
         //推荐流暂时只按发布时间排序，新的在前，id做次级排序保证翻页顺序稳定
         wrapper.orderByDesc(PublishedPost::getCreateTime);
         wrapper.orderByDesc(PublishedPost::getId);
@@ -70,5 +74,11 @@ public class FeedServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         wrapper.and(w -> w.notInSql(PublishedPost::getBarId, "select id from bar where is_banned = 1")
                 .or()
                 .isNull(PublishedPost::getBarId));
+    }
+
+    //排除被封禁的帖子
+    private void excludeBannedPost(LambdaQueryWrapper<PublishedPost> wrapper)
+    {
+        wrapper.and(w -> w.isNull(PublishedPost::getIsBanned).or().ne(PublishedPost::getIsBanned,1));
     }
 }

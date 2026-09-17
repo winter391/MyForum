@@ -18,6 +18,7 @@
         <module>Forum-Comment</module>
         <module>Forum-Feed</module>
         <module>Forum-Notification</module>
+        <module>Fourm-Search</module>
     </modules>
     <groupId>org.example</groupId>
     <artifactId>MyForum</artifactId>

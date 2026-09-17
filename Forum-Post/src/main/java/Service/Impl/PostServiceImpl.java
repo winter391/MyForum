@@ -257,6 +257,10 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
             throw new GlobalException("该帖子不存在");
         }
         checkBarNotBanned(post.getBarId());
+        if(Integer.valueOf(1).equals(post.getIsBanned()))
+        {
+            throw new GlobalException("该帖子已被封禁");
+        }
         getBaseMapper().addViewCount(id);
         post.setViewCount(post.getViewCount()+1);
         return post;
@@ -268,6 +272,8 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         checkBarNotBanned(dto.getBarId());
         LambdaQueryWrapper<PublishedPost> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PublishedPost::getBarId, dto.getBarId());
+        //排除被封禁的帖子
+        wrapper.and(w -> w.isNull(PublishedPost::getIsBanned).or().ne(PublishedPost::getIsBanned,1));
         wrapper.orderByDesc(PublishedPost::getPin);
         if(dto.getSortType()==PostCode.SORT_LIKE)
         {

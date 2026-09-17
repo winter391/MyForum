@@ -36,4 +36,7 @@ public class PublishedPost
     private Integer commentCount;
 
     private Date createTime;
+
+    //帖子是否被封禁，被封禁的帖子不能被用户获取
+    private Integer isBanned;
 }

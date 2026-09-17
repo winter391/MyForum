@@ -54,7 +54,8 @@ create table post_published
     view_count int default 0 comment'这个帖子的浏览量',
     like_count int default 0 comment '这个帖子的点赞数',
     comment_count int default 0 comment '这个帖子的评论数',
-    create_time datetime default current_timestamp comment '这个帖子的发布时间'
+    create_time datetime default current_timestamp comment '这个帖子的发布时间',
+    is_banned tinyint default 0 comment '这个帖子是否被封禁'
 
 ) engine=InnoDB charset = utf8mb4 comment '这张表存储了已经发布的帖子的信息';
 
