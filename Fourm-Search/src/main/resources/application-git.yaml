@@ -1,0 +1,6 @@
+server:
+  port: 8088
+
+spring:
+  config:
+    import: classpath:application-common-git.yaml
