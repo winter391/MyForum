@@ -54,7 +54,7 @@ create table post_published
     view_count int default 0 comment'这个帖子的浏览量',
     like_count int default 0 comment '这个帖子的点赞数',
     comment_count int default 0 comment '这个帖子的评论数',
-    create_time datetime comment '这个帖子的发布时间'
+    create_time datetime default current_timestamp comment '这个帖子的发布时间'
 
 ) engine=InnoDB charset = utf8mb4 comment '这张表存储了已经发布的帖子的信息';
 
@@ -128,3 +128,15 @@ create table comment_like
     user_id bigint comment '点赞用户的id',
     unique key comment_like_unique (comment_id, user_id)
 )engine=InnoDB charset = utf8mb4 comment '这张表存储了每个用户对每条评论的点赞记录，用来防止重复点赞';
+
+
+
+create table system_message
+(
+    id bigint primary key,
+    receiver_id bigint comment '接收者id',
+    message varchar(255) comment '消息本体，如果是文件那么存储的就是url',
+    type tinyint comment '文件类型，0：文字，1：文件',
+    chat_id int comment '会话内id，标识这是系统向用户发的第几条消息'
+)engine = InnoDB charset  = utf8mb4 comment '这张表存储了系统消息';
+

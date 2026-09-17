@@ -1,6 +1,5 @@
 package Start;
 
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,10 +7,11 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("Mapper")
-@ComponentScan({"Code", "Config","Controller", "DLL","DTO","Entity","Service","Mapper","Exception","Interceptor","Util"})
-public class start
-{
+@ComponentScan({"Entity","Controller","Service","Code","Config","Enums","Exception","Interceptor","Mapper","Result","Util"})
+public class ForumNotificationApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(start.class, args);
+        SpringApplication.run(ForumNotificationApplication.class, args);
     }
+
 }

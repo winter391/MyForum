@@ -76,7 +76,6 @@ public class PostServiceImpl extends ServiceImpl<PublishedPostMapper, PublishedP
         Long old_id = unPublishedPost.getId();
         unPublishedPost.setId(null);
         PublishedPost res = CopyProperties.copyProperties(unPublishedPost,PublishedPost.class);
-        res.setCreateTime(new Date());
         save(res);
         unPublishedPostMapper.deleteById(old_id);
     }
