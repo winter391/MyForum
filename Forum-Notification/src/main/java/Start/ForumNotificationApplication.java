@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("Mapper")
-@ComponentScan({"Entity","Controller","Service","Code","Config","Enums","Exception","Interceptor","Mapper","Result","Util"})
+@ComponentScan({"Entity","DLL","Controller","Service","Code","Config","Enums","Exception","Interceptor","Mapper","Result","Util"})
 public class ForumNotificationApplication {
 
     public static void main(String[] args) {

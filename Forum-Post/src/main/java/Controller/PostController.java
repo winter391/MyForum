@@ -30,7 +30,7 @@ public class PostController
 
 
     @PostMapping("/uploadImage")
-    public Result<?> uploadImage(MultipartFile request, @RequestBody @Valid UploadImageDto dto)
+    public Result<?> uploadImage(MultipartFile request, @Valid UploadImageDto dto)
     {
         try
         {
