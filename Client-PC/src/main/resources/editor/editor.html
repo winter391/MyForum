@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+    html, body {
+        margin: 0; padding: 0;
+        font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        font-size: 15px;
+        color: #1f2329;
+    }
+    #wrap { position: relative; }
+    #editor {
+        min-height: 300px;
+        padding: 12px 14px;
+        outline: none;
+        line-height: 1.8;
+        word-break: break-word;
+        border: 1px solid #e0e2e6;
+        border-radius: 6px;
+    }
+    #editor:empty::before {
+        content: attr(data-placeholder);
+        color: #b3b7bd;
+    }
+    #editor img {
+        max-width: 100%;
+        border-radius: 4px;
+        cursor: move;
+        vertical-align: top;
+        margin: 4px 0;
+    }
+    #editor img.selected {
+        outline: 2px solid #3370ff;
+        outline-offset: 2px;
+    }
+    #handles {
+        position: absolute;
+        display: none;
+        pointer-events: auto;
+        z-index: 10;
+    }
+    .handle {
+        position: absolute;
+        width: 10px; height: 10px;
+        background: #3370ff;
+        border: 1px solid #fff;
+        border-radius: 2px;
+    }
+    .handle.nw { left: -5px; top: -5px; cursor: nwse-resize; }
+    .handle.ne { right: -5px; top: -5px; cursor: nesw-resize; }
+    .handle.sw { left: -5px; bottom: -5px; cursor: nesw-resize; }
+    .handle.se { right: -5px; bottom: -5px; cursor: nwse-resize; }
+    #dropMark {
+        position: absolute;
+        width: 2px;
+        background: #3370ff;
+        display: none;
+        z-index: 5;
+        pointer-events: none;
+    }
+    #tip {
+        color: #8a9099;
+        font-size: 12px;
+        padding: 6px 14px 0 14px;
+    }
+</style>
+</head>
+<body>
+<div id="wrap">
+    <div id="editor" contenteditable="true" data-placeholder="输入正文，可通过上方按钮插入图片或动图"></div>
+    <div id="dropMark"></div>
+    <div id="handles">
+        <div class="handle nw" data-dx="-1" data-dy="-1"></div>
+        <div class="handle ne" data-dx="1"  data-dy="-1"></div>
+        <div class="handle sw" data-dx="-1" data-dy="1"></div>
+        <div class="handle se" data-dx="1"  data-dy="1"></div>
+    </div>
+</div>
+<div id="tip">选中图片后可拖动四角调整大小；拖动图片本身可移动到正文任意位置；Delete 键删除选中图片</div>
+
+<script>
+(function () {
+    var editor = document.getElementById('editor');
+    var wrap = document.getElementById('wrap');
+    var handles = document.getElementById('handles');
+    var dropMark = document.getElementById('dropMark');
+
+    var selectedImg = null;
+    var dragState = null;
+
+    editor.addEventListener('mousedown', onEditorMouseDown);
+    document.addEventListener('mousemove', onDocMouseMove);
+    document.addEventListener('mouseup', onDocMouseUp);
+    // 点击非图片处取消选中
+    document.addEventListener('mousedown', function (e) {
+        if (e.target.tagName !== 'IMG') deselect();
+    }, true);
+
+    function select(img) {
+        deselect();
+        selectedImg = img;
+        img.classList.add('selected');
+        positionHandles();
+    }
+
+    function deselect() {
+        if (selectedImg) selectedImg.classList.remove('selected');
+        selectedImg = null;
+        handles.style.display = 'none';
+        dropMark.style.display = 'none';
+    }
+
+    function positionHandles() {
+        if (!selectedImg) return;
+        var r = selectedImg.getBoundingClientRect();
+        var wr = wrap.getBoundingClientRect();
+        handles.style.display = 'block';
+        handles.style.left = (r.left - wr.left) + 'px';
+        handles.style.top = (r.top - wr.top) + 'px';
+        handles.style.width = r.width + 'px';
+        handles.style.height = r.height + 'px';
+    }
+
+    window.addEventListener('resize', positionHandles);
+
+    function onEditorMouseDown(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+            select(e.target);
+            dragState = {
+                mode: 'move',
+                img: e.target,
+                startX: e.clientX,
+                startY: e.clientY,
+                moved: false,
+                targetRange: null
+            };
+        } else {
+            deselect();
+        }
+    }
+
+    Array.prototype.forEach.call(handles.querySelectorAll('.handle'), function (h) {
+        h.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dragState = {
+                mode: 'resize',
+                img: selectedImg,
+                handle: h,
+                startX: e.clientX,
+                startY: e.clientY,
+                w: selectedImg.getBoundingClientRect().width,
+                h: selectedImg.getBoundingClientRect().height
+            };
+        });
+    });
+
+    function onDocMouseMove(e) {
+        if (!dragState) return;
+        var dx = e.clientX - dragState.startX;
+        var dy = e.clientY - dragState.startY;
+        if (dragState.mode === 'move') {
+            if (Math.abs(dx) < 3 && Math.abs(dy) < 3) return;
+            dragState.moved = true;
+            dragState.img.style.opacity = '0.4';
+            var range = caretRangeFromPoint(e.clientX, e.clientY);
+            if (range && editor.contains(range.startContainer)) {
+                var rect = range.getBoundingClientRect();
+                var wr = wrap.getBoundingClientRect();
+                dropMark.style.display = 'block';
+                dropMark.style.left = (rect.left - wr.left - 1) + 'px';
+                dropMark.style.top = (rect.top - wr.top) + 'px';
+                dropMark.style.height = Math.max(rect.height, 18) + 'px';
+                dragState.targetRange = range;
+            }
+        } else if (dragState.mode === 'resize') {
+            var hd = dragState.handle.dataset;
+            var w = dragState.w + dx * hd.dx;
+            var h = dragState.h + dy * hd.dy;
+            if (w > 60) dragState.img.style.width = Math.round(w) + 'px';
+            if (h > 60) dragState.img.style.height = '';
+            positionHandles();
+        }
+    }
+
+    function onDocMouseUp(e) {
+        if (!dragState) return;
+        var st = dragState;
+        dragState = null;
+        if (st.mode === 'move') {
+            st.img.style.opacity = '';
+            dropMark.style.display = 'none';
+            if (st.moved && st.targetRange) {
+                var range = caretRangeFromPoint(e.clientX, e.clientY);
+                if (range && editor.contains(range.startContainer)) {
+                    var imgRange = document.createRange();
+                    imgRange.selectNode(st.img);
+                    var cmp = range.compareBoundaryPoints(Range.START_TO_START, imgRange);
+                    var cmp2 = range.compareBoundaryPoints(Range.START_TO_END, imgRange);
+                    if (cmp < 0 || cmp2 > 0) { // 目标点不在图片自身内部才移动
+                        try { range.insertNode(st.img); } catch (err) { /* 放弃本次移动 */ }
+                    }
+                }
+            }
+            positionHandles();
+        }
+    }
+
+    function caretRangeFromPoint(x, y) {
+        if (document.caretRangeFromPoint) return document.caretRangeFromPoint(x, y);
+        if (document.caretPositionFromPoint) {
+            var p = document.caretPositionFromPoint(x, y);
+            if (p) {
+                var r = document.createRange();
+                r.setStart(p.offsetNode, p.offset);
+                return r;
+            }
+        }
+        return null;
+    }
+
+    // 键盘删除选中图片
+    document.addEventListener('keydown', function (e) {
+        if (selectedImg && (e.key === 'Delete' || e.key === 'Backspace')) {
+            e.preventDefault();
+            var img = selectedImg;
+            deselect();
+            if (img.parentNode) img.parentNode.removeChild(img);
+        }
+    });
+
+    // ---------------- 对 Java 侧暴露的 API ----------------
+    window.editorAPI = {
+        /**
+         * 在光标处插入图片。
+         * src：用于显示的地址（本地图为 data: URL，已上传图为 https URL）
+         * pendingId：本地图的临时编号，非空时该图片尚未上传
+         */
+        insertImage: function (src, pendingId) {
+            editor.focus();
+            var img = document.createElement('img');
+            img.src = src;
+            if (pendingId) img.setAttribute('data-pending', pendingId);
+            var sel = window.getSelection();
+            if (sel && sel.rangeCount > 0 && editor.contains(sel.getRangeAt(0).startContainer)) {
+                var range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(img);
+            } else {
+                editor.appendChild(img);
+            }
+            placeCaretAfter(img);
+            select(img);
+            editor.normalize();
+        },
+
+        /**
+         * 序列化为 blocks JSON：
+         * [{"type":"text","content":".."},{"type":"image","content":"https..或 pending:id","width":360}]
+         * 图片在正文中的先后顺序即其位置。
+         */
+        getBlocksJson: function () {
+            var blocks = [];
+            var appendText = function (text) {
+                if (!text) return;
+                var last = blocks.length > 0 ? blocks[blocks.length - 1] : null;
+                if (last && last.type === 'text') {
+                    last.content += (last.content ? '\n' : '') + text;
+                } else {
+                    blocks.push({ type: 'text', content: text });
+                }
+            };
+            var walkText = function (node, buf) {
+                Array.prototype.forEach.call(node.childNodes, function (child) {
+                    if (child.nodeType === 3) {
+                        buf.push(child.data);
+                    } else if (child.tagName === 'BR') {
+                        buf.push('\n');
+                    } else if (child.tagName === 'IMG') {
+                        buf.push(''); // 不应出现（图片都是顶层），占位
+                    } else {
+                        walkText(child, buf);
+                        buf.push('\n');
+                    }
+                });
+            };
+            Array.prototype.forEach.call(editor.childNodes, function (node) {
+                if (node.nodeType === 3) {
+                    appendText(node.data);
+                } else if (node.tagName === 'IMG') {
+                    var pending = node.getAttribute('data-pending');
+                    var rect = node.getBoundingClientRect();
+                    blocks.push({
+                        type: 'image',
+                        content: pending ? ('pending:' + pending) : node.src,
+                        width: Math.max(60, Math.round(rect.width))
+                    });
+                } else if (node.tagName === 'BR') {
+                    appendText('\n');
+                } else {
+                    var buf = [];
+                    walkText(node, buf);
+                    appendText(buf.join(''));
+                }
+            });
+            // 去掉纯空白的文本块
+            blocks = blocks.filter(function (b) {
+                return b.type === 'image' || (b.content && b.content.trim() !== '');
+            });
+            return JSON.stringify(blocks);
+        },
+
+        /** 无文字且无图片时为空 */
+        isEmpty: function () {
+            return editor.textContent.replace(/[​\n\r\t]/g, '').trim() === '' &&
+                   editor.querySelectorAll('img').length === 0;
+        },
+
+        clear: function () {
+            editor.innerHTML = '';
+            deselect();
+        },
+
+        focusEditor: function () { editor.focus(); }
+    };
+
+    function placeCaretAfter(node) {
+        var range = document.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+})();
+</script>
+</body>
+</html>

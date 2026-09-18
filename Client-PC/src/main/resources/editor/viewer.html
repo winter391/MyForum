@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+    html, body {
+        margin: 0; padding: 0 0 16px 0;
+        font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        font-size: 15px;
+        color: #1f2329;
+        background: transparent;
+    }
+    #content { padding: 4px 2px; line-height: 1.8; word-break: break-word; }
+    #content img { max-width: 100%; border-radius: 4px; vertical-align: top; }
+</style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+    window.viewerAPI = {
+        setContent: function (html) {
+            var tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            // 白名单净化：只保留文本、br、img
+            var walk = function (node) {
+                Array.prototype.forEach.call(node.childNodes, function (child) {
+                    if (child.nodeType === 1) {
+                        if (child.tagName === 'IMG' || child.tagName === 'BR') {
+                            walk(child);
+                        } else {
+                            var text = document.createTextNode(child.textContent);
+                            child.parentNode.replaceChild(text, child);
+                        }
+                    }
+                });
+            };
+            walk(tmp);
+            document.getElementById('content').innerHTML = tmp.innerHTML;
+        },
+        clear: function () {
+            document.getElementById('content').innerHTML = '';
+        }
+    };
+</script>
+</body>
+</html>

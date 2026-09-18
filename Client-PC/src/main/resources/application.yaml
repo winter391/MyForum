@@ -1,0 +1,22 @@
+myforum:
+  # 后端各微服务所在主机
+  host: 127.0.0.1
+  ports:
+    im-platform: 8080
+    im-server: 8081
+    login-register: 8082
+    forum-bar: 8084
+    forum-comment: 8085
+    forum-feed: 8086
+    fourm-search: 8088
+    forum-post: 8089
+  # IM-Server 的 Netty WebSocket 端口
+  websocket-port: 8083
+
+spring:
+  application:
+    name: Client-PC
+
+logging:
+  level:
+    root: warn

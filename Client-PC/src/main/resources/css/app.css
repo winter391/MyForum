@@ -1,0 +1,121 @@
+/* MyForum PC 客户端全局样式 */
+.root {
+    -fx-font-family: "Microsoft YaHei";
+    -fx-font-size: 14px;
+    -fx-background-color: #f5f6f7;
+    -fx-text-fill: #1f2329;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+    -fx-background-color: #3370ff;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 6 18;
+    -fx-cursor: hand;
+    -fx-font-size: 14;
+}
+.btn:hover { -fx-background-color: #285dd9; }
+.btn:disabled { -fx-background-color: #a8bffa; }
+
+.btn-secondary {
+    -fx-background-color: #e8eaec;
+    -fx-text-fill: #1f2329;
+    -fx-background-radius: 6;
+    -fx-padding: 6 18;
+    -fx-cursor: hand;
+}
+.btn-secondary:hover { -fx-background-color: #dcdfe3; }
+
+.btn-danger {
+    -fx-background-color: #f54a45;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 6 18;
+    -fx-cursor: hand;
+}
+.btn-danger:hover { -fx-background-color: #d93934; }
+
+/* ---------- 输入 ---------- */
+.field {
+    -fx-background-color: white;
+    -fx-border-color: #d0d3d6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10;
+}
+.field:focused { -fx-border-color: #3370ff; }
+
+/* ---------- 卡片 ---------- */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 2);
+}
+
+/* ---------- 侧边导航 ---------- */
+.nav {
+    -fx-background-color: white;
+    -fx-pref-width: 210;
+    -fx-padding: 14 10;
+}
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-alignment: center-left;
+    -fx-padding: 10 16;
+    -fx-background-radius: 8;
+    -fx-font-size: 15;
+    -fx-cursor: hand;
+    -fx-text-fill: #41464c;
+    -fx-max-width: infinity;
+}
+.nav-button:hover { -fx-background-color: #f0f2f5; }
+.nav-button:active { -fx-background-color: #e4e7ec; }
+.nav-button-selected {
+    -fx-background-color: #e8f0ff;
+    -fx-text-fill: #3370ff;
+    -fx-font-weight: bold;
+}
+
+/* ---------- 列表 ---------- */
+.list-cell:filled:selected {
+    -fx-background-color: #e8f0ff;
+    -fx-text-fill: #1f2329;
+}
+
+/* ---------- 标签页 ---------- */
+.tab-header-background { -fx-background-color: transparent; }
+.tab:selected .tab-label { -fx-text-fill: #3370ff; }
+
+/* ---------- 滚动条 ---------- */
+.scroll-bar:vertical .track { -fx-background-color: transparent; }
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #d0d3d6;
+    -fx-background-radius: 4;
+    -fx-background-insets: 2;
+}
+.scroll-bar:vertical .thumb:hover { -fx-background-color: #b8bcc1; }
+
+/* ---------- 消息气泡 ---------- */
+.bubble-me {
+    -fx-background-color: #3370ff;
+    -fx-text-fill: white;
+    -fx-background-radius: 12 12 2 12;
+    -fx-padding: 8 12;
+}
+.bubble-other {
+    -fx-background-color: white;
+    -fx-text-fill: #1f2329;
+    -fx-background-radius: 12 12 12 2;
+    -fx-padding: 8 12;
+}
+
+/* ---------- 标题 ---------- */
+.h1 { -fx-font-size: 22; -fx-font-weight: bold; }
+.h2 { -fx-font-size: 17; -fx-font-weight: bold; }
+.muted { -fx-text-fill: #8a9099; -fx-font-size: 12; }
+.link {
+    -fx-text-fill: #3370ff;
+    -fx-cursor: hand;
+}

@@ -154,6 +154,10 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
     {
         UserSession session = GetUser.getUser();
         List<Long> ids = subscribeMapper.getSubscriberIds(session.getId());
+        if(ids.isEmpty())
+        {
+            return new ArrayList<>();
+        }
         LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
         query.select(User::getId,User::getNickName).in(User::getId,ids);
         List<User> users = userMapper.selectList(query);
@@ -171,6 +175,10 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
     {
         UserSession session = GetUser.getUser();
         List<Long> ids = subscribeMapper.getSubscribedIds(session.getId());
+        if(ids.isEmpty())
+        {
+            return new ArrayList<>();
+        }
         LambdaQueryWrapper<User> query = new LambdaQueryWrapper<>();
         query.select(User::getId,User::getNickName).in(User::getId,ids);
         List<User> users = userMapper.selectList(query);
