@@ -39,6 +39,14 @@ public class MessageController
     }
 
 
+    @PostMapping("/Unsubscribe")
+    public Result<?> Unsubscribe(@RequestBody Long id)
+    {
+        messageService.Unsubscribe(id);
+        return ResultUtil.success();
+    }
+
+
     @PostMapping("/GetFollowers")
     public Result<List<GetFollowersV0>> GetFollowers()
     {

@@ -15,6 +15,8 @@ public interface MessageService extends IService<PrivateMessage>
 
     public void Subscribe(Long id);
 
+    public void Unsubscribe(Long id);
+
     public List<GetFollowersV0> GetFollowers();
 
 

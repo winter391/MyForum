@@ -1,6 +1,6 @@
 package start;
 
-import Code.RabbitmqCode;
+import Code.ImRabbitmqCode;
 import Code.RedisCode;
 import Code.RedissonCode;
 import Code.ServerId;
@@ -66,9 +66,9 @@ public class Initialize implements ApplicationRunner
     @PreDestroy
     public void destroy()
     {
-        rabbitAdmin.deleteQueue(RabbitmqCode.privateMessageQueueName+ServerId.id);
-        rabbitAdmin.deleteQueue(RabbitmqCode.systemMessageQueueName+ServerId.id);
-        rabbitAdmin.deleteExchange(RabbitmqCode.SERVER_NAME+ServerId.id);
+        rabbitAdmin.deleteQueue(ImRabbitmqCode.privateMessageQueueName+ServerId.id);
+        rabbitAdmin.deleteQueue(ImRabbitmqCode.systemMessageQueueName+ServerId.id);
+        rabbitAdmin.deleteExchange(ImRabbitmqCode.SERVER_NAME+ServerId.id);
     }
 
 
@@ -98,15 +98,15 @@ public class Initialize implements ApplicationRunner
 
     public void messageServerInitialize()
     {
-        TopicExchange topicExchange = new TopicExchange(RabbitmqCode.SERVER_NAME+ServerId.id,true,false);
-        Queue privateMessageQueue = new Queue(RabbitmqCode.privateMessageQueueName+ServerId.id,true,false,false);
-        Queue systemMessageQueue = new Queue(RabbitmqCode.systemMessageQueueName+ServerId.id,true,false,false);
+        TopicExchange topicExchange = new TopicExchange(ImRabbitmqCode.SERVER_NAME+ServerId.id,true,false);
+        Queue privateMessageQueue = new Queue(ImRabbitmqCode.privateMessageQueueName+ServerId.id,true,false,false);
+        Queue systemMessageQueue = new Queue(ImRabbitmqCode.systemMessageQueueName+ServerId.id,true,false,false);
         rabbitAdmin.declareExchange(topicExchange);
         rabbitAdmin.declareQueue(privateMessageQueue);
         rabbitAdmin.declareQueue(systemMessageQueue);
-        Binding bindingPrivateMessage = BindingBuilder.bind(privateMessageQueue).to(topicExchange).with(RabbitmqCode.privateMessageRoutingKey);
-        Binding bindingSystemMessage = BindingBuilder.bind(systemMessageQueue).to(topicExchange).with(RabbitmqCode.systemMessageRoutingKey);
-        Binding bindingExchanger = BindingBuilder.bind(topicExchange).to(new TopicExchange(RabbitmqCode.mainExchanger)).with(RabbitmqCode.getMainExchangerRoutingKey(ServerId.id));
+        Binding bindingPrivateMessage = BindingBuilder.bind(privateMessageQueue).to(topicExchange).with(ImRabbitmqCode.privateMessageRoutingKey);
+        Binding bindingSystemMessage = BindingBuilder.bind(systemMessageQueue).to(topicExchange).with(ImRabbitmqCode.systemMessageRoutingKey);
+        Binding bindingExchanger = BindingBuilder.bind(topicExchange).to(new TopicExchange(ImRabbitmqCode.mainExchanger)).with(ImRabbitmqCode.getMainExchangerRoutingKey(ServerId.id));
         rabbitAdmin.declareBinding(bindingPrivateMessage);
         rabbitAdmin.declareBinding(bindingSystemMessage);
         rabbitAdmin.declareBinding(bindingExchanger);
@@ -115,13 +115,13 @@ public class Initialize implements ApplicationRunner
     public void ListenerInitialize()
     {
         SimpleMessageListenerContainer PMcontainer = new SimpleMessageListenerContainer();
-        PMcontainer.setQueueNames(RabbitmqCode.privateMessageQueueName+ServerId.id);
+        PMcontainer.setQueueNames(ImRabbitmqCode.privateMessageQueueName+ServerId.id);
         PMcontainer.setMessageListener(privateMessageListener);
         PMcontainer.setConnectionFactory(connectionFactory);
         PMcontainer.start();
 
         SimpleMessageListenerContainer SMcontainer = new SimpleMessageListenerContainer();
-        SMcontainer.setQueueNames(RabbitmqCode.systemMessageQueueName+ServerId.id);
+        SMcontainer.setQueueNames(ImRabbitmqCode.systemMessageQueueName+ServerId.id);
         SMcontainer.setMessageListener(systemMessageListener);
         SMcontainer.setConnectionFactory(connectionFactory);
         SMcontainer.start();

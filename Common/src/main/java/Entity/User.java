@@ -20,7 +20,7 @@ public class User
 
     private Short sex;
 
-    private Boolean isBanned;
+    private Short isBanned;
 
     private String headImage;
 

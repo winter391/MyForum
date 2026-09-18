@@ -48,7 +48,7 @@ public class SearchServiceImpl implements SearchService
         {
             throw new GlobalException("该用户不存在");
         }
-        if(user.getIsBanned())
+        if(UserCode.isBanned(user.getIsBanned()))
         {
             throw new GlobalException("该用户已被封禁");
         }
@@ -67,7 +67,7 @@ public class SearchServiceImpl implements SearchService
         List<UserV0> res = new ArrayList<>();
         for(User user:users)
         {
-            if(user.getIsBanned()) continue;
+            if(UserCode.isBanned(user.getIsBanned())) continue;
             res.add(CopyProperties.copyProperties(user,UserV0.class));
         }
         return res;

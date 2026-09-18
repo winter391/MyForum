@@ -138,6 +138,18 @@ public class MessageServiceImpl extends ServiceImpl<PrivateMessageMapper,Private
     }
 
     @Override
+    public void Unsubscribe(Long id)
+    {
+        UserSession user = GetUser.getUser();
+        Long target_id = subscribeMapper.getSubscribedId(user.getId(),id);
+        if(target_id==null)
+        {
+            throw new GlobalException("您没有关注对方");
+        }
+        subscribeMapper.deleteSubscribe(user.getId(),id);
+    }
+
+    @Override
     public List<GetFollowersV0> GetFollowers()
     {
         UserSession session = GetUser.getUser();

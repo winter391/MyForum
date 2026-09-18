@@ -1,6 +1,7 @@
 package Service.Impl;
 
 import Code.JwtCode;
+import Code.UserCode;
 import DTO.LoginDto;
 import DTO.RefreshTokenDto;
 import DTO.RegisterDto;
@@ -31,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         {
             throw new GlobalException("用户名或密码错误");
         }
-        if(user.getIsBanned())
+        if(UserCode.isBanned(user.getIsBanned()))
         {
             throw new GlobalException("该用户已被封禁");
         }
@@ -62,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         {
             throw new GlobalException("该用户不存在");
         }
-        if(user.getIsBanned())
+        if(UserCode.isBanned(user.getIsBanned()))
         {
             throw new GlobalException("该用户已被封禁");
         }

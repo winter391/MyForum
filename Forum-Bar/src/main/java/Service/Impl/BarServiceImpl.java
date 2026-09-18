@@ -41,7 +41,7 @@ public class BarServiceImpl extends ServiceImpl<BarMapper, Bar> implements BarSe
     public void createBar(CreateBarDto dto)
     {
         UserSession session = GetUser.getUser();
-        if(session.getIsBanned().equals(UserCode.banned))
+        if(UserCode.isBanned(session.getIsBanned()))
         {
             throw new GlobalException("您已被封禁，无法创建贴吧");
         }

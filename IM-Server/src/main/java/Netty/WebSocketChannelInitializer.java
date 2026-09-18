@@ -3,6 +3,7 @@ package Netty;
 import Netty.Handler.ListenerHandler;
 import Netty.Handler.LoginVerifyTokenHandler;
 import Netty.Handler.OnLineHeartBeatHandler;
+import Netty.Handler.PingHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -40,11 +41,8 @@ public class WebSocketChannelInitializer extends ChannelInitializer<SocketChanne
                 .addLast(new WebSocketServerProtocolHandler("/ws"))
                 .addLast(new IdleStateHandler(60,0,0, TimeUnit.SECONDS))
                 .addLast(new OnLineHeartBeatHandler(redisTemplate,redissonClient))
+                .addLast(new PingHandler())
                 .addLast(new LoginVerifyTokenHandler())
                 .addLast(new ListenerHandler(redisTemplate,redissonClient));
-
-
-
-
     }
 }

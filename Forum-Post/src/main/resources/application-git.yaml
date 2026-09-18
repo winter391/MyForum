@@ -1,3 +1,6 @@
+server:
+  port: 8089
+
 spring:
   config:
     import: classpath:application-common-git.yaml
